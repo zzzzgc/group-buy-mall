@@ -1,0 +1,101 @@
+// 订制基础样式
+@import "variable.scss";
+
+@function rpx($value) {
+  @return $value * 1rpx;
+}
+
+html {
+  line-height: 1;
+  //font-family: "PingFang SC", "STHeitiSC-Light", "Helvetica-Light", arial,
+  //  sans-serif, "Droid Sans Fallback";
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  background: $color-background;
+  color: $color-text;
+  font-family: $default_font-family;
+  font-size: $font-size-default;
+}
+
+.ib {
+  display: inline-block;
+}
+
+
+/* 默认块高度 */
+$default_block_height: rpx(20);
+/*
+  订正默认样式
+*/
+button {
+  //@extend .weui-btn;
+}
+
+
+/* START字体  */
+
+@mixin fontFamily {
+  //margin-left: 5px;
+  //margin-right: 5px;
+}
+
+.text-max {
+  /*只能为阿拉伯数字,如金额、时间  */
+  font-size: 40pt;
+}
+
+.text-title-main {
+  /*页面大标题,一般用户结果(支付完成)、没有状态的页面  */
+  font-size: 20pt;
+  @include fontFamily;
+}
+
+.text-button {
+  /*页面内大按钮，与按钮搭配使用  */
+  font-size: 18pt;
+  @include fontFamily;
+}
+
+.text-title {
+  /*页面内首要信息，基准的，可以是连续的，如列标题，消息气泡  */
+  font-size: 17pt;
+  @include fontFamily;
+}
+
+.text-info {
+  /*页面内次要的描述信息,服务于首要信息并与之关联,如列表摘要  */
+  font-size: 14pt;
+  color: #888;
+  @include fontFamily;
+}
+
+.text-button-mini {
+  /*页面辅助信息,需要弱化的内容,如链接、小按钮  */
+  font-size: 13pt;
+  color: #576b95;
+  @include fontFamily;
+}
+
+.text-other {
+  /*说明文本, 如版权信息等不需要用户关注的信息  */
+  font-size: 11pt;
+  color: #b2b2b2;
+  @include fontFamily;
+}
+
+/* END字体  */
+
+/* 默认边框(块样式) */
+.default_block {
+  border: rpx(1) solid #ddd;
+  border-radius: rpx(10);
+  margin-bottom: $default_block_height;
+}
+
+/* 小按钮 */
+.mini-button {
+  /*width: 25%;*/
+  margin-left: 5px;
+  margin-right: 5px
+}
+

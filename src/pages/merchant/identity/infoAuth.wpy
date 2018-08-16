@@ -1,0 +1,92 @@
+<!--lang值  默认值:css   可选:css、less、scss、stylus、postcss-->
+<style lang="scss">
+  @import "../../../style/scssBase";
+
+</style>
+
+<!--lang值  默认值:babel   可选:babel、TypeScript-->
+<template>
+  <view class="container">
+  </view>
+</template>
+
+<!--lang值  默认值:wxml   可选:wxml、xml、pug(原jade)-->
+<script>
+  import wepy from 'wepy'
+
+  export default class infoAuth extends wepy.page {
+    /**
+     * 页面配置对象，对应于原生的page.json文件，类似于app.wpy中的config
+     */
+    config = {
+      navigationBarTitleText: '模板'
+    }
+
+    /**
+     * 页面组件列表对象，声明页面所引入的组件列表
+     */
+    components = {}
+
+    /**
+     * wxml事件处理函数对象，存放响应wxml中所捕获到的事件的函数，如bindtap、bindchange
+     */
+    methods = {}
+
+    /**
+     * 其他函数对象写到与methods平级的地方
+     */
+
+    /**
+     * 页面渲染数据对象，存放可用于页面模板绑定的渲染数据
+     */
+    data = {}
+
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad(options) {
+    }
+
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady() {
+    }
+
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow() {
+    }
+
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide() {
+    }
+
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload() {
+    }
+
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh() {
+    }
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom() {
+    }
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+    }
+  }
+</script>
