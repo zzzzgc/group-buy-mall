@@ -14,7 +14,7 @@
 
       <div v-for="(order, orderIndex) in orders" :key="orderIndex" class="item-card-block">
         <!--<i-avatar :src="order.user_head_url" size="small" shape="square"></i-avatar>-->
-        <div @click="handleOrderClick($event, order.orderId)">
+        <div @click="handleOrderClick($event, order.orderId, order.createDate)">
           <i-cell is-link>
             <!--<i-cell :title="'[' + order.groupInfo.status + ']' + ' ' + order.groupInfo.name" is-link>-->
             <span class="text-info" style="display: inline-block">{{'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupInfo.name}}&nbsp;</span>
@@ -26,6 +26,7 @@
               <span class="text-info">{{order.userInfo.nickName}} </span>
             </div>
             <span class="text-other" style="display: block">订单号:{{order.orderId}}</span>
+            <span class="text-other" style="display: block">创建时间:{{order.createDate}}</span>
           </i-cell>
         </div>
         <i-collapse name="ceshi">
@@ -80,17 +81,17 @@
         this.searchText = e
         console.log('处理变更搜索', e)
       },
-      handleOrderClick: function (e, orderId) { // 处理订单单击事件
+      handleOrderClick: function (e, orderId, createDate) { // 处理订单单击事件
         console.log('处理订单单击事件', e)
         wx.navigateTo({
-          url: '../detail/main?orderId=' + orderId
+          url: '../detail/main?orderId=' + orderId + '&createDate=' + createDate
         })
       },
       getData: function (searchText, searchType) { //  获取服务数据
         // TODO 获取服务端数据
         return [
           {
-            create_date: '2018-07-20 16:34',
+            createDate: '2018-07-20 16:34',
             groupInfo: {
               status: 0,
               name: '良品店'
@@ -131,7 +132,7 @@
             ]
           },
           {
-            create_date: '2018-07-20 16:34',
+            createDate: '2018-07-20 16:34',
             groupInfo: {
               status: 1,
               name: '非常长的名字非常长的名字非常长的名字非常长的名字非常长的名字非常长的名字'
@@ -172,7 +173,7 @@
             ]
           },
           {
-            create_date: '2018-07-20 16:34',
+            createDate: '2018-07-20 16:34',
             groupInfo: {
               status: 2,
               name: '良品店'

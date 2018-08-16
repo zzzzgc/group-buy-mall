@@ -21,6 +21,32 @@ html {
   display: inline-block;
 }
 
+/* 布局 */
+// 子项水平排列居中换行布局
+.flex-row-center {
+  display: flex;
+  // 水平 向下换行
+  flex-flow: row wrap;
+  // 主轴居中
+  justify-content: center;
+  // 交叉轴居中
+  align-items: center;
+  // 等分空间
+  flex-grow: 1;
+}
+// 子项垂直排列居中换行布局
+.flex-column-center {
+  display: flex;
+  // 水平 向下换行
+  flex-flow: column wrap;
+  // 主轴居中
+  justify-content: center;
+  // 交叉轴居中
+  align-items: center;
+  // 等分空间
+  flex-grow: 1;
+}
+
 
 /* 默认块高度 */
 $default_block_height: rpx(20);

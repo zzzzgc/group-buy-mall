@@ -8,7 +8,12 @@ export default {
   config: {
     // 引入全局插件
     usingComponents: {
-      'i-icon': '/static/dist/icon/index'
+      'i-icon': '/static/dist/icon/index',
+      'i-input': '/static/dist/input/index',
+      'i-panel': '/static/dist/panel/index',
+      'i-cell': '/static/dist/cell/index',
+      'i-cell-group': '/static/dist/cell-group/index',
+      'i-button': '/static/dist/button/index'
     },
     // 注意，页面级可配置属性相当于只是`src/main.js`中配置里的`window`部分
     // 标题
