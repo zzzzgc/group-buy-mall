@@ -7,8 +7,8 @@ import qs from 'qs'
 
 import config from '../config'
 const host = config.host
-const appKey = config.appKey
-const appid = config.appid
+// const appKey = config.appKey
+// const appid = config.appid
 
 /**
  * 接口模版====post

@@ -11,6 +11,8 @@ export default {
       'i-icon': '/static/dist/icon/index',
       'i-input': '/static/dist/input/index',
       'i-panel': '/static/dist/panel/index',
+      'i-switch': '/static/dist/switch/index',
+      'i-input-number': '/static/dist/input-number/index',
       'i-cell': '/static/dist/cell/index',
       'i-cell-group': '/static/dist/cell-group/index',
       'i-button': '/static/dist/button/index'

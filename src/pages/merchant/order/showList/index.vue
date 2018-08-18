@@ -13,18 +13,24 @@
       </radio-group>
 
       <div v-for="(order, orderIndex) in orders" :key="orderIndex" class="item-card-block">
-        <!--<i-avatar :src="order.user_head_url" size="small" shape="square"></i-avatar>-->
         <div @click="handleOrderClick($event, order.orderId, order.createDate)">
-          <i-cell is-link>
-            <!--<i-cell :title="'[' + order.groupInfo.status + ']' + ' ' + order.groupInfo.name" is-link>-->
-            <span class="text-info" style="display: inline-block">{{'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupInfo.name}}&nbsp;</span>
-            <!--<span class="text-info" style="display: inline-block">{{'[' + order.groupInfo.status + ']' + order.groupInfo.name}}&nbsp;</span>-->
-            <div style="display: inline-block">
-              <image style="width: 20px;height: 20px;" lazy-load :src="order.userInfo.user_head_url"
-                     mode="aspectFit">&nbsp;
-              </image>
-              <span class="text-info">{{order.userInfo.nickName}} </span>
+          <i-cell :title="'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupInfo.name" is-link>
+            <div class="left-right">
+
+              <div class="up-bottom">
+                <!--<span class="text-info" style="display: inline-block">{{'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupInfo.name}}&nbsp;</span>-->
+                <div style="display: inline-block">
+                  <image style="width: 20px;height: 20px;" lazy-load :src="order.userInfo.user_head_url" mode="aspectFit"></image>
+                  <span class="text-other">{{order.userInfo.nickName}} </span>
+                </div>
+              </div>
+
+              <div class="show-phone">
+                <i-icon type="mobilephone" size="25" id="phone" @click.stop="handleCellPhone(orderIndex, order.userInfo.phone)"/><label class="text-other" @click.stop="handleCellPhone(orderIndex, order.userInfo.phone)" >联系手机 <span v-if="order.userInfo.cellPhoneCount">{{order.userInfo.cellPhoneCount}}次</span></label>
+              </div>
+
             </div>
+            <span :class="{red:order.orderDeliverStatus==0}">发货状态:{{getOrderDeliverStatus[order.orderDeliverStatus]}}</span>
             <span class="text-other" style="display: block">订单号:{{order.orderId}}</span>
             <span class="text-other" style="display: block">创建时间:{{order.createDate}}</span>
           </i-cell>
@@ -66,7 +72,8 @@
     // 计算属性
     computed: {
       ...mapGetters('group', [
-        'getGroupBuyStatus'
+        'getGroupBuyStatus',
+        'getOrderDeliverStatus'
       ])
     },
     // 函数集合
@@ -97,11 +104,12 @@
               name: '良品店'
             },
             orderTotalPrice: 1654654.5445,
-            orderStatus: 0,
+            orderDeliverStatus: 0,
             orderId: '123465ds9a87f98a7dsf',
             userInfo: {
               user_head_url: 'http://img.zcool.cn/community/011d1159784366a8012193a3e7da5c.jpg@1280w_1l_2o_100sh.jpg',
-              nickName: '非常长的名字非常长的名字非常长的名字非常长的名字非常长的名字'
+              nickName: '用户昵称',
+              phone: '18718840426'
             },
             products: [
               {
@@ -135,14 +143,15 @@
             createDate: '2018-07-20 16:34',
             groupInfo: {
               status: 1,
-              name: '非常长的名字非常长的名字非常长的名字非常长的名字非常长的名字非常长的名字'
+              name: '良品元和速'
             },
             orderTotalPrice: 1654654.5445,
-            orderStatus: 0,
+            orderDeliverStatus: 1,
             orderId: 'a6sd8f798ew7qr3',
             userInfo: {
               user_head_url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534993508&di=b81629161642e88f9634e6bdd87aaca4&imgtype=jpg&er=1&src=http%3A%2F%2Fimg07.tooopen.com%2Fimages%2F20170508%2Ftooopen_sy_208631868843.jpg',
-              nickName: '年少大客'
+              nickName: '年少大客',
+              phone: '18718840426'
             },
             products: [
               {
@@ -173,17 +182,18 @@
             ]
           },
           {
-            createDate: '2018-07-20 16:34',
             groupInfo: {
               status: 2,
               name: '良品店'
             },
+            createDate: '2018-07-20 16:34',
             orderTotalPrice: 1654654.5445,
             orderId: 'wqer87eq4r',
-            orderStatus: 0,
+            orderDeliverStatus: 0,
             userInfo: {
               user_head_url: 'http://img1.imgtn.bdimg.com/it/u=3496940105,3255527640&fm=27&gp=0.jpg',
-              nickName: '低调as来得快'
+              nickName: '低调as来得快',
+              phone: '18718840426'
             },
             products: [
               {
@@ -214,6 +224,29 @@
             ]
           }
         ]
+      },
+      handleCellPhone: function (orderIndex, phone) { // 拨打电话
+        let that = this
+        wx.makePhoneCall({
+          phoneNumber: phone,
+          success: function (response) {
+            // console.log('打电话成功', response)
+            let num = 0
+            if (that.orders[orderIndex].userInfo.cellPhoneCount) {
+              num = that.orders[orderIndex].userInfo.cellPhoneCount + 1
+            } else {
+              num = 1
+            }
+            // console.log(that.orders[orderIndex].userInfo + '计数值:' + that.orders[orderIndex].userInfo.cellPhoneCount + '-->' + num)
+            that.$set(that.orders[orderIndex].userInfo, 'cellPhoneCount', num)
+          },
+          fail: function (response) {
+            console.log('打电话失败', response)
+          },
+          complete: function (response) {
+            console.log('打电话', response)
+          }
+        })
       }
     },
     // 组件注册
@@ -254,5 +287,33 @@
   .item-card-block {
     border-radius: 20px;
     margin: 0 20px 20px 20px;
+  }
+
+  .left-right {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+  }
+
+  .up-bottom {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .show-phone {
+    border-radius: 5px;
+    background-color: #ffcd32;
+    color: white;
+    height: 25px;
+    flex: none;
+    /*border: 1px solid #100000;*/
+    label {
+      color: white;
+      margin: 5px;
+    }
+  }
+
+  .red{
+    color: red;
   }
 </style>

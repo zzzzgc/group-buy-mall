@@ -6,6 +6,10 @@ const state = {
     '未开始',
     '进行中',
     '已结束'
+  ],
+  orderDeliverStatus: [
+    '未发货',
+    '已发货'
   ]
 }
 
@@ -13,6 +17,9 @@ const state = {
 const getters = {
   getGroupBuyStatus: (state, getters, rootState, rootGetters) => {
     return state.groupBuyStatus
+  },
+  getOrderDeliverStatus: function (state, getters, rootState, rootGetters) {
+    return state.orderDeliverStatus
   }
 }
 

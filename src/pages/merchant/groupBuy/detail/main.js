@@ -13,6 +13,7 @@ export default {
       'i-panel': '/static/dist/panel/index',
       'i-cell': '/static/dist/cell/index',
       'i-input': '/static/dist/input/index',
+      'i-button': '/static/dist/button/index',
       'i-radio-group': '/static/dist/radio-group/index',
       'i-radio': '/static/dist/radio/index',
       'i-swipeout': '/static/dist/swipeout/index'

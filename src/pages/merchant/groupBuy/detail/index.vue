@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <!--<div class="base-info text-other">-->
-      <!--<span>团购编号: {{groupBuyId}}</span>-->
-      <!--<span>团购状态: {{getStatusNickname}}</span>-->
+    <!--<span>团购编号: {{groupBuyId}}</span>-->
+    <!--<span>团购状态: {{getStatusNickname}}</span>-->
     <!--</div>-->
     <div style="width: 100%;">
       <i-panel title="团购信息">
@@ -14,7 +14,7 @@
     <div style="width: 100%;">
       <i-panel title="商品与销售信息">
         <div style="width: 100%;margin-bottom: 20px" v-for="(info, index) in groupDetailInfo" :key="index">
-          <div >
+          <div>
             <i-cell-group>
               <i-cell url="" link-type="navigateTo">
                 <div class="item">
@@ -30,16 +30,23 @@
           </div>
         </div>
       </i-panel>
+      <button class="share_button" open-type="share" id="share" type="primary">分享团购</button>
     </div>
+    <label for="share">
+      <div class="pre_share_group">
+        <i-icon size="25" type="share"/>
+        <span style="font-size: 10px">分享<br>团购</span>
+      </div>
+    </label>
     <div class="pre_edit_group" @click="handleEtidButton">
-      <i-icon size="25" type="setup" />
+      <i-icon size="25" type="setup"/>
       <span style="font-size: 10px">编辑<br>团购</span>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import {mapGetters} from 'vuex'
 
   export default {
     // 数据
@@ -117,10 +124,21 @@
     component: {},
     // 侦听属性
     watch: {},
-    created () { // vue实例创建
+    created: function () { // vue实例创建
       // console.log('page index created', this)
     },
-    onLoad () { // vue 初始化加载
+    onShareAppMessage: function (object) {
+      console.log(object.from)
+      console.log(object.target)
+      console.log(object.webViewUrl)
+      // TODO 转发url订正为客户商品展示.
+      return {
+        title: '转发标题',
+        path: 'pages/customer/groupBuy/show/main',
+        imageUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3587317807,2844810836&fm=27&gp=0.jpg'
+      }
+    },
+    onLoad: function () { // vue 初始化加载
       this.groupBuyId = this.$mp.query.groupBuyId
       this.groupBuyStatus = this.$mp.query.groupBuyStatus
       this.groupBuyTitle = this.$mp.query.groupBuyTitle
@@ -129,16 +147,16 @@
       })
       this.getData(this.groupBuyId)
     },
-    mounted () { // vue加载完毕
+    mounted: function () { // vue加载完毕
       // console.log('mounted', this)
     },
-    onShow () { // 小程序页面显示
+    onShow: function () { // 小程序页面显示
       // console.log('onShow', this)
     },
-    onUnload () { // 小程序页面出栈
+    onUnload: function () { // 小程序页面出栈
       // console.log('onUnload', this)
     },
-    onHide () { // 小程序页面隐藏
+    onHide: function () { // 小程序页面隐藏
       // console.log('onHide', this)
     }
   }
@@ -200,7 +218,25 @@
     align-items: center;
   }
 
+  .pre_share_group {
+    border-radius: 10px;
+    background-color: $color-theme;
+    opacity: 0.5;
+    padding: 5px;
+    width: 25px;
+    position: fixed;
+    top: 28%;
+    right: 3%;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .share_button {
+    background-color: $color-theme;
+  }
 
 
 </style>

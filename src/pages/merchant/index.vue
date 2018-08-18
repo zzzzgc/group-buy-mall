@@ -12,8 +12,7 @@
       <div v-for="(item, index, key) in menu" :key="key">
         <i-panel i-class="width-default" v-if="item.pages.length" class="cell-panel-demo" :title="item.name">
           <i-cell-group>
-            <i-cell v-for="(page, pageIndex, key) in item.pages" :key="key" :title="page.name" link-type="navigateTo"
-                    is-link :url="'/pages/merchant/'+item.group+'/'+page.url+'/main'">
+            <i-cell v-for="(page, pageIndex, key) in item.pages" :key="key" :title="page.name" link-type="navigateTo" is-link :url="'/pages/merchant/'+item.group+'/'+page.url+'/main'">
               <i-icon size="28" slot="icon" :type="page.icon"/>
             </i-cell>
           </i-cell-group>

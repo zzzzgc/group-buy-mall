@@ -15,8 +15,8 @@
       <!--<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="userLogin">点击登录</button>-->
     </div>
     <div class="button-bolck" style="width: 250px;">
-      <i-button class='home-button text-button' type='success' @click='gotoMerchantConfig'>我是团长</i-button>
-      <i-button class='home-button text-button' type='ghost'>我是团员</i-button>
+      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='success' @click='gotoMerchantConfig'>我是团长</i-button>
+      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost'>我是团员</i-button>
     </div>
   </div>
 </template>
@@ -25,7 +25,7 @@
   import * as types from '../../store/mutation-types'
 
   export default {
-    data () {
+    data: function () {
       return {
         radioValue: '',
         motto: 'Hello World',
@@ -34,20 +34,19 @@
         canIUse: wx.canIUse('button.open-type.getUserInfo')
       }
     },
-    components: {
-    },
+    components: {},
     computed: {
       openId: {
-        get () {
+        get: function () {
           return this.$store.state.openId
         },
-        set (openId) {
+        set: function (openId) {
           this.$store.commit(types.SET_OPEN_ID, openId)
         }
       }
     },
     methods: {
-      bindViewTap () {
+      bindViewTap: function () {
         const url = '../logs/main'
         wx.navigateTo({url})
       },
@@ -57,7 +56,7 @@
           url: '/pages/merchant/main'
         })
       },
-      getUserInfo () {
+      getUserInfo: function () {
         // 调用登录接口
         wx.login({
           success: () => {
@@ -72,7 +71,7 @@
           }
         })
       },
-      userLogin (e) {
+      userLogin: function (e) {
         let that = this
         // 查看是否授权
         wx.getSetting({
@@ -84,9 +83,10 @@
                 success: function () {
                   // 没过期 直接成功
                   that.userInfo = e.mp.detail.userInfo
-                  that.$tips.toast('重新登录成功', 'success', 1000)
+                  that.$tips.toast('自动登录成功', 'success', 1000)
                 },
                 fail: function () {
+                  console.log('登录状态已过期')
                   // 过期了 重新登录 先清楚登录的状态
                   // qcloud.clearSession()
                   // 登录态已过期，需重新登录
@@ -102,10 +102,14 @@
             } else {
               that.$tips.toast('用户未授权', 'none')
             }
+          },
+          error: function (res) {
+            console.log('获取失败', res)
           }
         })
       },
       getWxLogin: function ({encryptedData, iv, userinfo}) {
+        console.log('重新登录')
         let that = this
         wx.login({
           success: function (loginResult) {
@@ -124,9 +128,18 @@
         })
       }
     },
-    created () {
+    created: function () {
       // 调用应用实例的方法获取全局数据
       this.getUserInfo()
+      // let test = this.$http.get('wechat/getParam', {}).then(
+      //   (response) => {
+      //     console.log('成功', response)
+      //   },
+      //   (response) => {
+      //     console.log('失败', response)
+      //   }
+      // )
+      // console.log(test)
     }
   }
 </script>

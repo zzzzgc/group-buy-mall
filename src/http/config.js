@@ -10,9 +10,10 @@ var fly = new Fly()
 // //定义公共headers
 // fly.config.headers={xx:5,bb:6,dd:7}
 // //设置超时
-// fly.config.timeout=10000;
+fly.config.timeout = 10000
 // //设置请求基地址
 // fly.config.baseURL="https://wendux.github.io/"
+fly.config.baseURL = 'http://localhost:8090/'
 
 // 添加请求拦截器
 fly.interceptors.request.use(request => {
@@ -33,10 +34,12 @@ fly.interceptors.request.use(request => {
 fly.interceptors.response.use(
   response => {
     // 只将请求结果的data字段返回
+    console.log(response)
     return response.data
   },
-  err => {
+  error => {
     // 发生网络错误后会走到这里
+    console.log('报错了', error)
     // return Promise.resolve("ssss")
   }
 )
