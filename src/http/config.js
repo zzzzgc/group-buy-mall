@@ -5,6 +5,9 @@
 // 引入 fly
 var Fly = require('flyio/dist/npm/wx')
 var fly = new Fly()
+// import tips from '../common/js/tips'
+// tips提示工具类
+var tips = require('../common/js/tips')
 
 // 配置请求基地址
 // //定义公共headers
@@ -17,6 +20,8 @@ fly.config.baseURL = 'http://localhost:8090/'
 
 // 添加请求拦截器
 fly.interceptors.request.use(request => {
+  // 加载中...
+  tips.default.loading()
   // 给所有请求添加自定义header
   request.headers['X-Tag'] = 'flyio'
   // 打印出请求体
@@ -33,11 +38,15 @@ fly.interceptors.request.use(request => {
 // 添加响应拦截器，响应拦截器会在then/catch处理之前执行
 fly.interceptors.response.use(
   response => {
+    // 解除加载中tips
+    tips.default.loaded()
     // 只将请求结果的data字段返回
     console.log(response)
     return response.data
   },
   error => {
+    tips.default.loaded()
+    // TODO 上报错误
     // 发生网络错误后会走到这里
     console.log('报错了', error)
     // return Promise.resolve("ssss")

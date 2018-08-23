@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <i-icon size="20" type="prompt"/><span class="text-button-mini">抱歉!该功能正在加速研发中.请返回上一页.</span>
+    <i-icon size="20" type="prompt"/>
+    <span class="text-button-mini">抱歉!该功能正在加速研发中.请返回上一页.</span>
   </div>
 </template>
 

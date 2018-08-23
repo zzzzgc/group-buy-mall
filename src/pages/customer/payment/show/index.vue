@@ -10,7 +10,7 @@
           选择支付类型
         </view>
         <view slot="content">
-          可选支付宝二维码支付或微信二维码支付
+          可选支付宝二维码支付或微信二维码支付.
         </view>
       </i-step>
       <i-step status="">
@@ -18,7 +18,7 @@
           显示支付二维码图片
         </view>
         <view slot="content">
-          长按显示菜单,选择保存图片保存图片到本地
+          长按显示菜单,选择保存图片保存图片到本地.
         </view>
       </i-step>
       <i-step status="">
@@ -26,12 +26,12 @@
           用微信的扫描二维码的功能读取保存到本地手机相册的二维码
         </view>
         <view slot="content">
-          就会弹出支付页面,<span style="color: red">请先复制支付金额,防止突然忘记哦</span>
+          就会弹出支付页面,<span style="color: red">请先复制支付金额,防止临时忘记.</span>
         </view>
       </i-step>
       <i-step status="">
         <view slot="title">
-          支付"支付金额"指定的金额
+          支付"支付金额"指定的金额.
         </view>
         <view slot="content">
           支付完毕后记得保存截图作为凭证.
@@ -39,10 +39,10 @@
       </i-step>
       <i-step status="">
         <view slot="title">
-          联系团客服,说明订单和打款金额
+          联系团客服,说明订单和打款金额.
         </view>
         <view slot="content">
-          也可以通过已知微信联系哦
+          也可以通过已知微信联系.
         </view>
       </i-step>
       <i-step status="">
@@ -64,10 +64,6 @@
       <i-icon size="25" type="service"/>
       <span style="font-size: 10px">阿里<br>支付</span>
     </div>
-    <!--<image src="/static/img/微信二维码.png" mode="aspectFit" @click="showWechatImg"></image>-->
-    <!--<image src="/static/img/微信二维码.png" mode="aspectFit" @click="showWechatImg"></image>-->
-    <!--&lt;!&ndash;<image src="/static/img/微信二维码.png" mode="aspectFit" @click="showWechatImg"></image>&ndash;&gt;-->
-    <!--<image src="/static/img/支付宝二维码.png" mode="aspectFit"></image>-->
   </div>
 </template>
 

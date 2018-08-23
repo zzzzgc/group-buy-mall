@@ -1,3 +1,4 @@
+<!--商家端首页,用于显示商品可操作内容-->
 <template>
   <div class="container">
     <div style="width: 100%">
@@ -63,7 +64,7 @@
           pages: [
             {
               name: '查看订单',
-              url: 'showList',
+              url: 'list',
               icon: 'search'
             },
             {

@@ -16,7 +16,9 @@
     </div>
     <div class="button-bolck" style="width: 250px;">
       <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='success' @click='gotoMerchantConfig'>我是团长</i-button>
-      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost'>我是团员</i-button>
+      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost'
+                @click='gotoCustomerConfig'>我是团员
+      </i-button>
     </div>
   </div>
 </template>
@@ -52,8 +54,12 @@
       },
       gotoMerchantConfig: function () {
         wx.navigateTo({
-          // wx.redirectTo({
           url: '/pages/merchant/main'
+        })
+      },
+      gotoCustomerConfig: function () {
+        wx.navigateTo({
+          url: '/pages/customer/main'
         })
       },
       getUserInfo: function () {
@@ -131,15 +137,15 @@
     created: function () {
       // 调用应用实例的方法获取全局数据
       this.getUserInfo()
-      // let test = this.$http.get('wechat/getParam', {}).then(
-      //   (response) => {
-      //     console.log('成功', response)
-      //   },
-      //   (response) => {
-      //     console.log('失败', response)
-      //   }
-      // )
-      // console.log(test)
+      let test = this.$http.get('wechat/getParam', {}).then(
+        (response) => {
+          console.log('成功', response)
+        },
+        (response) => {
+          console.log('失败', response)
+        }
+      )
+      console.log(test)
     }
   }
 </script>

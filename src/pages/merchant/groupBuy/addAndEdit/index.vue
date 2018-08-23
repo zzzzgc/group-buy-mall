@@ -16,16 +16,15 @@
             <i-switch :value="groupBuySetting.distriBution" @change="distributionChange" slot="footer"/>
           </i-cell>
           <i-cell title="用户自提" label="团员可以到指定地点拿货">
-            <i-switch :value="groupBuySetting.noutoasiakasBution" @change="noutoasiakasChange" slot="footer"/>
+            <i-switch :value="groupBuySetting.noutoasiakasButton" @change="noutoasiakasChange" slot="footer"/>
           </i-cell>
         </i-cell-group>
       </i-panel>
-      <i-panel title="自提点配置" v-if="groupBuySetting.noutoasiakasBution">
+      <i-panel title="自提点配置" v-if="groupBuySetting.noutoasiakasButton">
         <i-cell-group>
           <i-cell v-for="(noutoasiakasInfo, index) in groupBuySetting.noutoasiakasAddresses"
-                  :key="noutoasiakasInfo.addressId" :title="noutoasiakasInfo.nickName" :label="noutoasiakasInfo.address">
-            <!--<span class="text-other"-->
-                  <!--style="overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;">{{}}</span>-->
+                  :key="noutoasiakasInfo.addressId" :title="noutoasiakasInfo.nickName"
+                  :label="noutoasiakasInfo.address">
             <i-switch :value="noutoasiakasInfo.checked" @change="noutoasiakasAddressesChange(index)" slot="footer"/>
           </i-cell>
           <i-cell>
@@ -59,7 +58,6 @@
         </view>
       </i-drawer>
       <i-panel title="商品配置">
-        <!--<aep v-if='groupBuySetting.products' :products="groupBuySetting.products" @infoChange="addAndEditProductChange"></aep>-->
         <aep v-if='groupBuySetting.products' v-model="groupBuySetting.products"></aep>
       </i-panel>
     </div>
@@ -67,12 +65,6 @@
       <i-button v-if="!isEdit" long="true" type="success" @click="addFormSubmit" id="foot">确认新建团购</i-button>
       <i-button v-else long="true" type="success" @click="editFormSubmit" id="foot">确认修改团购</i-button>
     </div>
-    <!--<i-input :value="value6" type="number" right title="消费总额" mode="wrapped" placeholder="询问收银员后输入"/>-->
-    <!--<i-input :value="value7" type="number" right error title="不参与优惠金额" mode="wrapped" placeholder="询问收银员后输入"/>-->
-
-    <!--</form>-->
-    <!--自提点modal-->
-    <!--<i-modal i-class="modal_class" title="标题" :visible="on_off.addNoutoasiakasSwitch" @ok="addNoutoasiakasStatus(1)" @cancel="addNoutoasiakasStatus(0)">-->
   </div>
 </template>
 
@@ -80,96 +72,16 @@
   import { mapGetters } from 'vuex'
   import map from '../../../../common/js/map.js'
   import aep from '../../../components/product/addAndEditProduct'
-  // const { $Toast } = require('../../../../../static/dist/base/index')
-  // import card from '../../../components/base/card'
 
   export default {
     // 数据
     data: {
-      // userLocationInfo: {
-      //   latitude: 0,
-      //   longitude: 0
-      // },
       isEdit: false,
-      groupBuyStatus: -1,
-      groupBuyId: -1,
+      groupBuyStatus: 0,
+      groupBuyId: 0,
       // 以上是编辑必备参数
       customItem: '全部',
-      groupBuySetting: {
-        title: '',
-        describe: '',
-        // 是否可以配送
-        distriBution: true,
-        // 是否可以自提
-        noutoasiakasBution: true,
-        // 自提点
-        noutoasiakasAddresses: [
-        ],
-        products: [
-          // {
-          //   name: '测试商品0号',
-          //   price: '120',
-          //   describe: '阿里斯顿会计分录卡萨丁交付了肯德基安防监控',
-          //   limitQuantity: true,
-          //   quantity: 123,
-          //   images: [
-          //     {
-          //       url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
-          //       productImagesId: 0
-          //     },
-          //     {
-          //       url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
-          //       productImagesId: 1
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
-          //       productImagesId: 2
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-          //       productImagesId: 3
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-          //       productImagesId: 4
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-          //       productImagesId: 5
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-          //       productImagesId: 6
-          //     }
-          //   ]
-          // },
-          // {
-          //   name: '测试商品1号',
-          //   price: '12.525',
-          //   describe: '阿里山的房间埃里克森电话费送大礼疯狂拉速度快放假啦开始的减肥阿里山的咖啡机埃里克圣诞节福利卡时代峻峰拉克丝大姐夫拉克丝大姐夫拉克丝大姐夫拉克丝大姐夫拉客阿斯蒂芬蔚蓝',
-          //   limitQuantity: true,
-          //   quantity: 123,
-          //   images: [
-          //     {
-          //       url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
-          //       productImagesId: 0
-          //     },
-          //     {
-          //       url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
-          //       productImagesId: 1
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
-          //       productImagesId: 2
-          //     },
-          //     {
-          //       url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-          //       productImagesId: 3
-          //     }
-          //   ]
-          // }
-        ]
-      },
+      groupBuySetting: {},
       on_off: {
         addNoutoasiakasSwitch: false
       },
@@ -212,8 +124,9 @@
           this.$tips.toast(msg, 'none', 2000)
           return
         }
+        // TODO 保存团购信息 saveGroupBuyInfo(groupBuySetting)
         wx.navigateTo({
-          url: '../manage/main?status=0'
+          url: '/pages/merchant/groupBuy/manage/main?status=0'
         })
       },
       editFormSubmit: function () { // 提交表单
@@ -223,19 +136,13 @@
           return
         }
         wx.navigateTo({
-          url: '../manage/main?status=0'
+          url: '/pages/merchant/groupBuy/manage/main?status=0'
         })
       },
       formSubmitVerify: function (e) { // 提交表单的验证,错误就返回信息,没错就返回false
         if (this.groupBuySetting.title === '') return '标题为空'
-        // if (this.describe === undefined) return '标题为空'
-        if (this.groupBuySetting.noutoasiakasBution === true) {
+        if (this.groupBuySetting.noutoasiakasButton === true) {
           if (this.groupBuySetting.noutoasiakasAddresses.length < 1) return '至少需要添加一个自提点'
-          // for (var num = 0; num <= this.groupBuySetting.noutoasiakasAddresses.length; num++) {
-          //   if (this.groupBuySetting.noutoasiakasAddresses[num].address === undefined) return '地址'
-          //   if (this.groupBuySetting.noutoasiakasAddresses[num].region.length < 3) return '请选择您的省份地址'
-          //   if (this.groupBuySetting.noutoasiakasAddresses[num].region.length < 3) return '请选择您的省份地址'
-          // }
         }
         if (this.groupBuySetting.products.length < 1) return '至少需要添加一个商品'
         for (let productIndex = 0; productIndex < this.groupBuySetting.products.length; productIndex++) {
@@ -264,7 +171,7 @@
         this.groupBuySetting.distriBution = mp.detail.value
       },
       noutoasiakasChange: function ({mp}) { // 自提点订正
-        this.groupBuySetting.noutoasiakasBution = mp.detail.value
+        this.groupBuySetting.noutoasiakasButton = mp.detail.value
       },
       noutoasiakasAddressesChange: function (index) { // 自提点配置订正
         this.groupBuySetting.noutoasiakasAddresses[index].checked = !this.groupBuySetting.noutoasiakasAddresses[index].checked
@@ -280,15 +187,11 @@
          * 判断是否是新增商品,非新增需要直接赋值(避免出现字符串写入又因为状态更新导致键入的内容清空并且又覆盖一次[简称:抖动的字符]),
          * 新增商品需要使用$set设置到数组中.vue的数组更新的时候不会刷新状态的
          */
-        // console.log('最大的索引', (this.groupBuySetting.products.length - 1 + 1), '操作索引', index, '结果', ((this.groupBuySetting.products.length - 1) < index) ? '不更新状态' : '更新状态')
         if ((this.groupBuySetting.products.length - 1) < index) {
           this.$set(this.groupBuySetting.products, index, product)
         } else {
-          // this.$set(this.groupBuySetting.products, index, product)
           this.groupBuySetting.products[index] = product
         }
-        // this.$set(this.groupBuySetting.products, index, product)
-        // console.log('订正后组件的值', index, this.groupBuySetting.products[index])
       },
       addNoutoasiakasOpen: function () { // 添加自提点的弹框
         var that = this
@@ -321,7 +224,7 @@
             return
           }
           console.log('点击成功,获取的信息如下', this.tempNoutoasiakasInfo)
-          // TODO 添加到用户的自提点信息并返回id
+          // TODO 加载团长用户所有自提点 getAllNoutoasiakas()
           // console.log(this.tempNoutoasiakasInfo.region.join(''))
           this.tempNoutoasiakasInfo.address = this.tempNoutoasiakasInfo.region.join('') + this.tempNoutoasiakasInfo.detailAddress
           this.groupBuySetting.noutoasiakasAddresses.push(this.tempNoutoasiakasInfo)
@@ -333,28 +236,135 @@
         this.tempNoutoasiakasInfo.region = mp.detail.value
         console.log('选择的地区', mp.detail.value, this.tempNoutoasiakasInfo.region)
       },
-      openUserSelectMap: function () {
-        var that = this
-        map.getUserSelectLocation(
-          location => {
-            console.log(location)
-            that.tempNoutoasiakasInfo = Object.assign({}, that.tempNoutoasiakasInfo, location)
-          }
-        )
-      },
-      handleClickImage: function (productIndex, imageIndex) { // 选中图片
-        // this.changeShowImagesAction(true)
-        this.showImagesActions = true
-        // console.log(this.showImagesAction)
-        this.selectImage.productIndex = productIndex
-        this.selectImage.imageIndex = imageIndex
-      },
-      changeShowImagesAction: function (value) { // 活动列表是否显示
-        this.showImagesActions = value
-      },
       handleClickItem: function (e) { // 选中活动列表的子项后
         console.log('点击活动后弹出的内容', e)
         this.changeShowImagesAction(false)
+      },
+      getData: function (groupBuyId) {
+        if (groupBuyId) {
+          // 编辑,TODO 加载团购服务信息 getGroupBuySetting(groupBuyId)
+          this.groupBuySetting = {
+            title: '回填标题',
+            describe: '回调描述',
+            // 是否可以配送
+            distriBution: true,
+            // 是否可以自提
+            noutoasiakasButton: true,
+            // 自提点
+            noutoasiakasAddresses: [
+              {
+                address: '北京省地极县否否市拉开圣诞节福利科技',
+                region: ['北京省', '地极限', '其他'],
+                detailAddress: '拉开圣诞节福利科技',
+                nickName: '家里',
+                addressId: 6568665,
+                checked: true
+              },
+              {
+                address: '广东省地极县否否市拉开圣诞节福利科技',
+                region: ['广东省', '地极限', '其他'],
+                detailAddress: '拉开圣诞节福利科技',
+                nickName: '家里',
+                addressId: 98732657,
+                checked: true
+              }
+            ],
+            products: [
+              {
+                name: '测试商品0号',
+                price: '120',
+                describe: '阿里斯顿会计分录卡萨丁交付了肯德基安防监控',
+                limitQuantity: true,
+                quantity: 123,
+                images: [
+                  {
+                    url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
+                    productImagesId: 0
+                  },
+                  {
+                    url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
+                    productImagesId: 1
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
+                    productImagesId: 2
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
+                    productImagesId: 3
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
+                    productImagesId: 4
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
+                    productImagesId: 5
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
+                    productImagesId: 6
+                  }
+                ]
+              },
+              {
+                name: '测试商品1号',
+                price: '12.525',
+                describe: '阿里山的房间埃里克森电话费送大礼疯狂拉速度快放假啦开始的减肥阿里山的咖啡机埃里克圣诞节福利卡时代峻峰拉克丝大姐夫拉克丝大姐夫拉克丝大姐夫拉克丝大姐夫拉客阿斯蒂芬蔚蓝',
+                limitQuantity: true,
+                quantity: 123,
+                images: [
+                  {
+                    url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
+                    productImagesId: 0
+                  },
+                  {
+                    url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
+                    productImagesId: 1
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
+                    productImagesId: 2
+                  },
+                  {
+                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
+                    productImagesId: 3
+                  }
+                ]
+              }
+            ]
+          }
+        } else {
+          // 新增,TODO 加载团购服务信息 getGroupBuySetting(null)
+          this.groupBuySetting = {
+            title: '',
+            describe: '',
+            // 是否可以配送
+            distriBution: false,
+            // 是否可以自提
+            noutoasiakasButton: true,
+            // 自提点
+            noutoasiakasAddresses: [
+              {
+                address: '北京省地极县否否市拉开圣诞节福利科技',
+                region: ['北京市', '地极限', '其他'],
+                detailAddress: '拉开圣诞节福利科技',
+                nickName: '家里',
+                addressId: -1,
+                checked: true
+              },
+              {
+                address: '广东省地极县否否市拉开圣诞节福利科技',
+                region: ['北京市', '地极限', '其他'],
+                detailAddress: '拉开圣诞节福利科技',
+                nickName: '家里',
+                addressId: -1,
+                checked: true
+              }
+            ],
+            products: []
+          }
+        }
       }
     },
     // 组件注册
@@ -374,7 +384,9 @@
         this.isEdit = true
         this.groupBuyStatus = this.$mp.query.groupBuyStatus
         this.groupBuyId = this.$mp.query.groupBuyId
+        this.groupBuyTitle = this.$mp.query.groupBuyTitle
       }
+      this.getData(this.groupBuyId)
     }
   }
 </script>

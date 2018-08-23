@@ -40,3 +40,8 @@ export const get = params => {
 export const post = params => {
   return fly.post(`${host}${params.url}`, qs.stringify(params.data))
 }
+
+//
+export const get = params => {
+  return fly.post(`xxx`, qs.stringify(params))
+}

@@ -13,16 +13,16 @@
     </div>
     <div style="width: 100%;">
       <i-panel title="商品与销售信息">
-        <div style="width: 100%;margin-bottom: 20px" v-for="(info, index) in groupDetailInfo" :key="index">
+        <div style="width: 100%;margin-bottom: 20px" v-for="(info, index) in products" :key="index">
           <div>
             <i-cell-group>
               <i-cell url="" link-type="navigateTo">
                 <div class="item">
-                  <span class="title text-title">{{info.productName}}</span><br/>
+                  <span class="title text-title">{{info.name}}</span><br/>
                   <div class="inline-info">
-                    <span>商品单价:{{info.productPrice}}￥</span>
+                    <span>商品单价:{{info.price}}￥</span>
                     <span v-if="groupBuyStatus != 0">销售数量:{{info.sellTotalNumber}}</span>
-                    <span v-if="groupBuyStatus != 0">销售额:{{info.sellTotalNumber * (info.productPrice)}}￥</span>
+                    <span v-if="groupBuyStatus != 0">销售额:{{info.sellTotalNumber * (info.price)}}￥</span>
                   </div>
                 </div>
               </i-cell>
@@ -55,10 +55,10 @@
         groupBuyId: -1,
         groupBuyStatus: -1,
         groupBuyTitle: '',
-        groupDetailInfo: [
+        products: [
           {
-            productName: '',
-            productPrice: -1,
+            name: '',
+            price: -1,
             sellTotalNumber: -1
           }
         ]
@@ -78,36 +78,36 @@
     // 函数集合
     methods: {
       getData: function (groupBuyId) {
-        // TODO 从服务中根据groupBuyId获取团购详细
-        this.groupDetailInfo = [
+        // TODO 获取团长团购商品详细 getGroupBuyProduct(groupBuyId)
+        this.products = [
           {
-            productName: '第一个商品',
-            productPrice: 12.5,
+            name: '第一个商品',
+            price: 12.5,
             sellTotalNumber: 12
           },
           {
-            productName: '第二个商品',
-            productPrice: 12.5,
+            name: '第二个商品',
+            price: 12.5,
             sellTotalNumber: 12
           },
           {
-            productName: '第三个商品',
-            productPrice: 12.5,
+            name: '第三个商品',
+            price: 12.5,
             sellTotalNumber: 12
           },
           {
-            productName: '第四个商品',
-            productPrice: 12.5,
+            name: '第四个商品',
+            price: 12.5,
             sellTotalNumber: 12
           },
           {
-            productName: '第五个商品',
-            productPrice: 12.5,
+            name: '第五个商品',
+            price: 12.5,
             sellTotalNumber: 12
           },
           {
-            productName: '第六个商品',
-            productPrice: 12.5,
+            name: '第六个商品',
+            price: 12.5,
             sellTotalNumber: 12
           }
         ]
@@ -116,7 +116,7 @@
         // this.groupBuyStatus
         console.log('编辑请求请求:', '../addAndEdit/main?groupBuyId=' + this.groupBuyId + '&groupBuyStatus=' + this.groupBuyStatus)
         wx.navigateTo({
-          url: '../addAndEdit/main?groupBuyId=' + this.groupBuyId + '&groupBuyStatus=' + this.groupBuyStatus
+          url: '/pages/merchant/groupBuy/addAndEdit/main?groupBuyId=' + this.groupBuyId + '&groupBuyStatus=' + this.groupBuyStatus + '&groupBuyTitle=' + this.groupBuyTitle
         })
       }
     },
@@ -127,14 +127,14 @@
     created: function () { // vue实例创建
       // console.log('page index created', this)
     },
-    onShareAppMessage: function (object) {
+    onShareAppMessage: function (object) { // 编辑转发内容
       console.log(object.from)
       console.log(object.target)
       console.log(object.webViewUrl)
-      // TODO 转发url订正为客户商品展示.
+      // TODO 转发url订正为客户商品展示. title修改为商家店铺和我们的商标
       return {
         title: '转发标题',
-        path: 'pages/customer/groupBuy/show/main',
+        path: 'pages/customer/groupBuys/show/main?groupBuyId' + this.groupBuyId,
         imageUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3587317807,2844810836&fm=27&gp=0.jpg'
       }
     },

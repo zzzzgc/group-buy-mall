@@ -114,7 +114,7 @@
       },
       getData: function (status) { // 获取团购列表
         this.count += 1
-        // TODO 服务器获取指定状态的团购数据
+        // TODO 服务器获取指定状态的团购服务数据 getGroupBuyList(status)
         return [
           {
             title: '第一个团的团标题，状态：' + status + ',count:' + this.count,
@@ -150,12 +150,15 @@
             // 开启/关闭团购
             switch (status) {
               case this.groups[0].status:
+                // TODO 订正团购状态(增改) changeGroupBuyStatus(groupBuyId,status)
                 console.log('开启团购', groupBuyIndex, '团购编码:', groupBuyId)
                 break
               case this.groups[1].status:
+                // TODO 订正团购状态(增改) changeGroupBuyStatus(groupBuyId,status)
                 console.log('关闭团购', groupBuyIndex, '团购编码:', groupBuyId)
                 break
               default:
+                // TODO 设置团购为删除状态 deleteGroupBuyStatus(groupBuyId,status)
                 console.log('删除团购', groupBuyIndex, '团购编码:', groupBuyId)
             }
             break
@@ -182,7 +185,7 @@
         // 团购名称
         let groupBuyTitle = this.groups[status].groupBuysInfo[groupBuyIndex].title
         wx.navigateTo({
-          url: '../detail/main?groupBuyId=' + groupBuyId + '&groupBuyStatus=' + status + '&groupBuyTitle=' + groupBuyTitle
+          url: '/pages/merchant/groupBuy/detail/main?groupBuyId=' + groupBuyId + '&groupBuyStatus=' + status + '&groupBuyTitle=' + groupBuyTitle
         })
       }
     },

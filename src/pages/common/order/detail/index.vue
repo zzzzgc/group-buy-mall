@@ -2,7 +2,7 @@
   <div class="container">
     <!--确认发货-->
     <div style="width: 100%;">
-      <i-cell title="发货状态" label="选中后表示确认收到货了,团长慎重选择">
+      <i-cell title="发货状态" label="选中后表示确认收到货了">
         <i-switch :value="detail.isDelivery" size="large" @change="handleIsDeliveryChange" slot="footer">
           <view slot="open">已发</view>
           <view slot="close">未发</view>
@@ -58,6 +58,7 @@
     data: function () {
       return {
         isEdit: false,
+        isCustomer: true,
         orderId: '',
         createDate: '2018-08-17 13:55',
         detail: {
@@ -152,6 +153,7 @@
       // options = this.$root.$mp.query
       if (this.$mp.query.orderId) {
         this.orderId = this.$mp.query.orderId
+        this.isCustomer = this.$mp.query.isCustomer
         this.getData(this.orderId)
       }
       // console.log('page index onLoad', this)

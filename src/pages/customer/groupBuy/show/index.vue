@@ -1,17 +1,23 @@
+/*
+这个页面是团长分享给团员买货的团购展示页(show),同时也是团购详细展示页(detail)
+*/
 <template>
   <div class="container">
     <!--主面板-->
     <div class="main-panel">
       <!--上半部分-->
-      <i-cell is-link>
+      <!--<i-cell url="../list/main?groupBuyId= + groupBuyId" is-link>-->
+      <i-cell @click="handleUserClick" is-link>
         <div class="main-panel-up">
-          <image class="main-panel-up-head-image" :src="detail.imageUrl"></image>
+          <image class="main-panel-up-head-image" :src="detail.userInfo.imageUrl"></image>
           <div>
             <div class="main-panel-up-text">
-              <i-icon type="addressbook" size="17"/><span>{{detail.nickName}}</span>
+              <i-icon type="addressbook" size="17"/>
+              <span>{{detail.userInfo.nickName}}</span>
             </div>
             <div class="main-panel-up-text">
-              <i-icon type="shop_fill" size="17"/><span>{{detail.shopName}}</span>
+              <i-icon type="shop_fill" size="17"/>
+              <span>{{detail.userInfo.shopName}}</span>
             </div>
           </div>
         </div>
@@ -27,19 +33,23 @@
 
     <div style="width: 80%;">
       <div class="product-list" v-for="(product, productIndex) in detail.groupBuySetting.products" :key="productIndex">
-        <image class="product-image"  :src="product.images[0].url"></image>
+        <image class="product-image" :src="product.images[0].url"></image>
         <div class="product-info">
           <span class="text-info">{{product.name}}</span>
           <span class="text-other">{{product.describe}}</span>
-          <span class="text-info">价格:{{product.price}}￥</span><i-input-number v-if="detail.groupBuyStatus === 1" :value="product.number" min="1" max="10000" @change="handleProductNumberChange($event, productIndex)"/>
+          <span class="text-info">价格:{{product.price}}￥</span>
+          <i-input-number v-if="detail.groupBuySetting.groupBuyStatus === 1" :value="product.number" min="1" max="10000"
+                          @change="handleProductNumberChange($event, productIndex)"/>
         </div>
       </div>
     </div>
 
     <div style="width: 100%;">
-      <button class="submit-order" :disabled="!detail.groupBuyStatus == 1" style="padding: 0" @click="handleSubmitOrderClick">
+      <button class="submit-order" :disabled="!detail.groupBuySetting.groupBuyStatus == 1" style="padding: 0"
+              @click="handleSubmitOrderClick">
         <div class="total-price">
-          <i-icon type="publishgoods_fill" size="28"/>合计:{{getTotalPrice}}￥ 提交订单
+          <i-icon type="publishgoods_fill" size="28"/>
+          合计:{{getTotalPrice}}￥ 提交订单
         </div>
       </button>
     </div>
@@ -47,18 +57,49 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import {mapGetters} from 'vuex'
+
   export default {
     // 数据
     data: function () {
       return {
-        detail: {
-          nickName: '我是xxx',
-          imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534514942363&di=e061488f47e604bcd44200ce59811134&imgtype=0&src=http%3A%2F%2Fimg010.hc360.cn%2Fm1%2FM04%2F0E%2F40%2FwKhQcFQlIAaELPsiAAAAAN1e96w230.jpg',
-          shopName: '豪大大店铺',
-          groupBuyId: 163546749879,
-          groupBuyStatus: 1,
+        groupBuyId: -1,
+        detail: {}
+      }
+    },
+    // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
+    props: [],
+    // 计算属性
+    computed: {
+      getStatusNickname: function () {
+        return this.getGroupBuyStatus[this.detail.groupBuySetting.groupBuyStatus]
+      },
+      ...mapGetters('group', [
+        'getGroupBuyStatus'
+      ]),
+      getTotalPrice: function () {
+        return this.detail.groupBuySetting.products.reduce(
+          (preValue, curValue, index, array) => {
+            // 由于除的是100 不会产生无限循环小数,不用四舍五入到2位小数
+            return (preValue * 1000 + (curValue.price * 1000 * curValue.number)) / 1000
+          },
+          0.0
+        )
+      }
+    },
+    // 函数集合
+    methods: {
+      getData: function (groupBuyId) {
+        // TODO 从后台获取数据,根据groupBuyId
+        this.detail = {
+          userInfo: {
+            nickName: '我是xxx',
+            imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534514942363&di=e061488f47e604bcd44200ce59811134&imgtype=0&src=http%3A%2F%2Fimg010.hc360.cn%2Fm1%2FM04%2F0E%2F40%2FwKhQcFQlIAaELPsiAAAAAN1e96w230.jpg',
+            shopName: '豪大大店铺'
+          },
           groupBuySetting: {
+            groupBuyId: 163546749879,
+            groupBuyStatus: 1,
             title: '团长的团购标题',
             describe: '团长的描述信息拉斯柯达解放路卡接收到了房间爱里的水开放接口时代峻峰阿拉萨的看风景阿来得快分阿流口水的房间拉的说法甲方as来得快就',
             products: [
@@ -179,30 +220,7 @@
             ]
           }
         }
-      }
-    },
-    // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
-    props: [],
-    // 计算属性
-    computed: {
-      getStatusNickname: function () {
-        return this.getGroupBuyStatus[this.detail.groupBuyStatus]
       },
-      ...mapGetters('group', [
-        'getGroupBuyStatus'
-      ]),
-      getTotalPrice: function () {
-        return this.detail.groupBuySetting.products.reduce(
-          (preValue, curValue, index, array) => {
-            // 由于除的是100 不会产生无限循环小数,不用四舍五入到2位小数
-            return (preValue * 1000 + (curValue.price * 1000 * curValue.number)) / 1000
-          },
-          0.0
-        )
-      }
-    },
-    // 函数集合
-    methods: {
       handleProductNumberChange: function ({mp}, productIndex) {
         this.$set(this.detail.groupBuySetting.products, productIndex, Object.assign({}, this.detail.groupBuySetting.products[productIndex], {number: mp.detail.value}))
       },
@@ -219,6 +237,11 @@
         wx.navigateTo({
           url: '../../payment/show/main?paymentAmount=' + totalPrice
         })
+      },
+      handleUserClick: function () { // 团长详细
+        wx.navigateTo({
+          url: '../list/main?groupBuyId=' + this.groupBuyId
+        })
       }
     },
     // 组件注册
@@ -230,6 +253,9 @@
     },
     onLoad: function () { // vue 初始化加载
       // options = this.$root.$mp.query
+      console.log('跳转到show携带的参数是:', this.$mp.query)
+      this.groupBuyId = this.$mp.query.groupBuyId
+      this.getData(this.groupBuyId)
       // console.log('page index onLoad', this)
     },
     mounted: function () { // vue加载完毕
@@ -249,7 +275,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .main-panel{
+  .main-panel {
     width: 80%;
     margin: 10px;
     border-radius: 15px;
@@ -263,7 +289,7 @@
         border-radius: 10px;
       }
       .main-panel-up-text {
-        margin:10px 20px;
+        margin: 10px 20px;
       }
     }
     .main-panel-bottom {
