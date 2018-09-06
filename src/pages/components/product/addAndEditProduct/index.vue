@@ -2,27 +2,23 @@
   <div class="aep-class">
     <div class="aep-item" v-for="(product, productIndex) in products" :key="productIndex">
       <i-cell-group>
-        <i-input :value="product.name" title="商品名称" @change="nameChange($event, productIndex)"
-                 placeholder="请输入新增商品的名称"/>
+        <i-input :value="product.name" title="商品名称" @change="productChange($event, productIndex, 'name', true)" placeholder="请输入新增商品的名称"/>
         <i-cell title="无限供应">
-          <i-switch :value="product.limitQuantity" @change="limitQuantityChange($event, productIndex)" slot="footer"/>
+          <i-switch :value="product.limitQuantity" @change="productChange($event, productIndex, 'limitQuantity')" slot="footer"/>
         </i-cell>
         <i-cell title="商品库存" v-if="!product.limitQuantity">
-          <i-input-number :value="product.quantity" min="1" max="9999" @change="quantityChange($event, productIndex)"
-                          slot="footer"/>
+          <i-input-number :value="product.quantity" min="1" max="9999" @change="productChange($event, productIndex, 'quantity')" slot="footer"/>
         </i-cell>
         <i-cell title="商品价格">
-          <i-input-number :value="product.price" min="0.01" max="9999.99" @change="priceChange($event, productIndex)"
-                          slot="footer"/>
+          <i-input-number :value="product.price" min="0.01" max="9999.99" @change="productChange($event, productIndex, 'price')" slot="footer"/>
         </i-cell>
         <i-cell title="商品描述">
-          <i-input :value="product.describe" type="textarea" @change="describeChange($event, productIndex)"
-                   placeholder="请输入商品描述(最多150字)(可选)" maxlength="150"/>
+          <i-input :value="product.descriptor" type="textarea" @change="productChange($event, productIndex, 'descriptor', true)" placeholder="请输入商品描述(最多150字)(可选)" maxlength="150"/>
         </i-cell>
         <i-cell title="商品图片">
           <div class="aep-product-images-block">
             <!-- 图片展示-->
-            <div v-for="(img, imgIndex) in product.images" :key="imgIndex">
+            <div v-for="(img, imgIndex) in product.groupBuyProductsImages" :key="imgIndex">
               <div>
                 <div @click="deleteImage(productIndex, imgIndex)" class="image-close">
                   <i-icon type="close" color="#ffffff" size="20"/>
@@ -69,36 +65,12 @@
     computed: {},
     // 函数集合
     methods: {
-      nameChange: function ({mp}, index) {
-        // let product = Object.assign({}, this.products[index], {name: mp.detail.detail.value})
-        // this.change(index, product)
-        Object.assign(this.products[index], {name: mp.detail.detail.value})
-        this.change()
-      },
-      describeChange: function ({mp}, index) {
-        // console.log('描述内容', mp.detail.detail.value)
-        // let product = Object.assign({}, this.products[index], {describe: mp.detail.detail.value})
-        // this.change(index, product)
-        Object.assign(this.products[index], {describe: mp.detail.detail.value})
-        this.change()
-      },
-      quantityChange: function ({mp}, index) {
-        // let product = Object.assign({}, this.products[index], {quantity: mp.detail.value})
-        // this.change(index, product)
-        Object.assign(this.products[index], {quantity: mp.detail.value})
-        this.change()
-      },
-      priceChange: function ({mp}, index) {
-        // let product = Object.assign({}, this.products[index], {price: mp.detail.value})
-        // this.change(index, product)
-        Object.assign(this.products[index], {price: mp.detail.value})
-        this.change()
-      },
-      limitQuantityChange: function ({mp}, index) {
-        // let product = Object.assign({}, this.products[index], {limitQuantity: mp.detail.value})
-        // this.change(index, product)
-        Object.assign(this.products[index], {limitQuantity: mp.detail.value})
-        this.change()
+      productChange: function ({mp}, index, nodeName, isInput) {
+        if (isInput) {
+          this.$set(this.products[index], nodeName, mp.detail.detail.value)
+        } else {
+          this.$set(this.products[index], nodeName, mp.detail.value)
+        }
       },
       change: function () { // 改变父组件的商品集合
         this.$emit('infoChange', this.products)
@@ -110,10 +82,10 @@
         this.$set(this.products, newIndex, Object.assign({}, { // 添加商品的模板
           name: '',
           price: '0.01',
-          describe: '',
+          descriptor: '',
           limitQuantity: true,
           quantity: 1,
-          images: []
+          groupBuyProductsImages: []
         }))
         // this.$set(this.products, newIndex, Object.assign({}, this.productTemplate))
         console.log('products', this.products)
@@ -126,8 +98,9 @@
           success: function (e) {
             console.log('获取到的文件', e.tempFilePaths)
             for (let tempFilePath of e.tempFilePaths) {
-              that.products[productIndex].images.push({url: tempFilePath, productImagesId: Date.now()})
-              console.log('addImage', that.products[productIndex].images)
+              // TODO 添加商品图片
+              that.products[productIndex].groupBuyProductsImages.push({url: tempFilePath, id: Date.now()})
+              console.log('addImage', that.products[productIndex].groupBuyProductsImages)
             }
           },
           fail: function (e) {
@@ -139,7 +112,8 @@
         })
       },
       deleteImage: function (productIndex, imageIndex) { // 删除图片
-        this.$delete(this.products[productIndex].images, imageIndex)
+        // TODO 删除商品图片
+        this.$delete(this.products[productIndex].groupBuyProductsImages, imageIndex)
       }
     },
     // 组件注册

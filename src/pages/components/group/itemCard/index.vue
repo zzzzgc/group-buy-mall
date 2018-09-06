@@ -4,8 +4,8 @@
       <i-swipeout :actions="swipeOutActions"  @change.stop="handleActionsChange($event, groupBuyIndex)">
         <view slot="content">
           <i-cell :title="groupBuyInfo.title" label="1.向左滑动可选择操作2.单击可以继续编辑和查看团购" @click="handleItemClick($event, groupBuyIndex)">
-            <span class="text-other">团购编码: {{groupBuyInfo.groupBuyId}}</span><br>
-            <span class="text-other">更新时间: {{groupBuyInfo.updateDate}}</span>
+            <span class="text-other">团购编码: {{groupBuyInfo.id}}</span><br>
+            <span class="text-other">更新时间: {{groupBuyInfo.updateAt}}</span>
           </i-cell>
         </view>
       </i-swipeout>
@@ -50,7 +50,7 @@
      * groupBuysInfo的item
      * {
             title: '第一个团的团标题',
-            describe: '第一个团的信息',
+            descriptor: '第一个团的信息',
             updateDate: '2018-08-20',
             sellTotalPrice: 12053.5
           },

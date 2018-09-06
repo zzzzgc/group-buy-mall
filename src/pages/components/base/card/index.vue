@@ -30,7 +30,7 @@
      * groupBuysInfo的item
      * {
             title: '第一个团的团标题',
-            describe: '第一个团的信息',
+            descriptor: '第一个团的信息',
             updateDate: '2018-08-20',
             sellTotalPrice: 12053.5
           },

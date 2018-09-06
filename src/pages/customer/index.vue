@@ -2,36 +2,32 @@
 <template>
   <div class="container">
     <span class="text-other">以下是邀请您参团团长的所有团购服务列表</span>
-    <div style="width: 100%" class="group" v-for="(merchant, merchantIndex) in detail.groupBuys" :key="merchantIndex">
+    <div style="width: 100%" class="group" v-for="(merchantUser, merchantUserIndex) in detail" :key="merchantUserIndex">
       <!--团长信息-->
       <div class="group-info">
-        <image class="group-info-image" :src="merchant.merchantInfo.imageUrl" mode="aspectFill"></image>
-        <span class="group-user-info-name">{{merchant.merchantInfo.name}}</span>
+        <image class="group-info-image" :src="merchantUser.imageUrl" mode="aspectFill"></image>
+        <span class="group-user-info-name">{{merchantUser.nickName}}</span>
       </div>
-
       <!--团购服务-->
-      <div class="group-item" v-for="(groupBuy, groupBuyIndex) in merchant.groupBuyInfo" :key="groupBuyIndex"
-           @click="handleGroupBuyClick(merchantIndex, groupBuyIndex)">
+      <div class="group-item" v-for="(groupBuy, groupBuyIndex) in merchantUser.groupBuys" :key="groupBuyIndex" @click="handleGroupBuyClick(merchantUserIndex, groupBuyIndex)">
         <!--团购信息-->
         <div class="group-buy-info">
-          <span class="group-buy-info-name text-title">{{groupBuy.name}}</span>
+          <span class="group-buy-info-name text-title">{{groupBuy.title}}</span>
         </div>
 
         <!--谁参加了团-->
-        <div style="width: 100%;" class="group-buy-info-join">
-          <div class="group-buy-info-join-images">
-            <image class="group-buy-info-join-image" v-for="(userImage, userImageIndex) in groupBuy.useUser"
-                   :key="userImageIndex" :src="userImage" mode="aspectFill"></image>
-          </div>
-          <span v-if="groupBuy.useUser.length>8" class="text-other" style="font-size: 10px">等{{groupBuy.useUser.length}}人参团</span>
-          <span v-else class="text-other">{{groupBuy.useUser.length}}人参团</span>
-        </div>
+        <!--<div style="width: 100%;" class="group-buy-info-join">-->
+        <!--<div class="group-buy-info-join-images">-->
+        <!--<image class="group-buy-info-join-image" v-for="(userImage, userImageIndex) in groupBuy.useUser" :key="userImageIndex" :src="userImage" mode="aspectFill"></image>-->
+        <!--</div>-->
+        <!--<span v-if="groupBuy.useUser.length>8" class="text-other" style="font-size: 10px">等{{groupBuy.useUser.length}}人参团</span>-->
+        <!--<span v-else class="text-other">{{groupBuy.useUser.length}}人参团</span>-->
+        <!--</div>-->
 
         <!--商品图片-->
         <div class="group-buy-info-product-images">
-          <div class="group-buy-info-product-item" v-for="(product, productIndex) in groupBuy.products"
-               :key="productIndex">
-            <image class="group-buy-info-product-item-image" :src="product.firstImageUrl" mode="aspectFill"></image>
+          <div class="group-buy-info-product-item" v-for="(product, productIndex) in groupBuy.groupBuyProducts" :key="productIndex">
+            <image class="group-buy-info-product-item-image" :src="product.groupBuyProductImages[0].url" mode="aspectFill"></image>
             <span class="group-buy-info-product-item-price text-other">{{product.price}}￥</span>
           </div>
         </div>
@@ -47,12 +43,12 @@
 
 <script>
   import {mapGetters} from 'vuex'
-
+  // import restfulApiSet from '../../http/restfulApiUtils'
   export default {
     // 数据
     data: function () {
       return {
-        detail: {}
+        detail: []
       }
     },
     // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
@@ -65,140 +61,15 @@
     },
     // 函数集合
     methods: {
-      getData: function () {
-        // TODO 服务获取数据,根据该团员被哪个团长邀请而决定
-        this.detail = {
-          groupBuys: [
-            {
-              merchantInfo: {
-                imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830743219&di=205ed1cbb51ae969e0e2113509f96736&imgtype=0&src=http%3A%2F%2Fimg5q.duitang.com%2Fuploads%2Fitem%2F201503%2F02%2F20150302165623_NtUCC.jpeg',
-                name: '世外水果铺(潭村店)'
-              },
-              groupBuyInfo: [
-                {
-                  id: 201801056546546,
-                  status: 1,
-                  name: '夏季海边产品团购专场',
-                  useUser: [
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246443&di=96fd5d3218c7e7f692efee6519bb0294&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F74%2F97%2F29G58PICS2T_1024.jpg',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png'
-                  ],
-                  products: [
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 123.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 456.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 12.48
-                    }
-                  ]
-                },
-                {
-                  id: 2201801050545456,
-                  status: 1,
-                  name: '全季节海边产品团购专场',
-                  useUser: [
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246443&di=96fd5d3218c7e7f692efee6519bb0294&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F74%2F97%2F29G58PICS2T_1024.jpg',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246439&di=3795ba864a91ae6b5ebcf680761d0332&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01efcf587dea43a801219c77199c2b.jpg'
-                  ],
-                  products: [
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 123.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 456.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 12.48
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              merchantInfo: {
-                imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830743219&di=205ed1cbb51ae969e0e2113509f96736&imgtype=0&src=http%3A%2F%2Fimg5q.duitang.com%2Fuploads%2Fitem%2F201503%2F02%2F20150302165623_NtUCC.jpeg',
-                name: '罔酿蟠桃园(潭村店)'
-              },
-              groupBuyInfo: [
-                {
-                  id: 3201801050545456,
-                  status: 1,
-                  name: '夏季海边产品团购专场',
-                  useUser: [
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246443&di=96fd5d3218c7e7f692efee6519bb0294&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F74%2F97%2F29G58PICS2T_1024.jpg',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246441&di=398ee717932b3c6cc8e41db788f3bf4c&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F15%2F57%2F49%2F98I58PICx7r_1024.png',
-                    'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830246439&di=3795ba864a91ae6b5ebcf680761d0332&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01efcf587dea43a801219c77199c2b.jpg'
-                  ],
-                  products: [
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 123.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 456.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 789.54
-                    },
-                    {
-                      firstImageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534830165487&di=8ea93b92613faaab09b5b32d98ee4eb7&imgtype=0&src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F06%2F15%2F146599335677049264.JPEG',
-                      price: 12.48
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+      getData: function (userId) {
+        this.$portApi.user.getAllCareAboutUserGroupBuyInfo().then(
+          users => {
+            this.detail = users
+          }
+        )
       },
       handleGroupBuyClick: function (merchantIndex, groupBuyIndex) {
-        console.log('456')
-        let groupBuyId = this.detail.groupBuys[merchantIndex].groupBuyInfo[groupBuyIndex].id
+        let groupBuyId = this.detail[merchantIndex].groupBuys[groupBuyIndex].id
         wx.navigateTo({
           url: 'groupBuy/show/main?groupBuyId=' + groupBuyId
         })
@@ -219,7 +90,7 @@
     onLoad: function () { // vue 初始化加载
       // options = this.$root.$mp.query
       // options = this.$mp.query.xxx
-      this.getData()
+      this.getData(this.$store.state.userId)
       // console.log('page index onLoad', this)
     },
     mounted: function () { // vue加载完毕

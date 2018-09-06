@@ -9,16 +9,14 @@
       </div>
       <div v-else class="userinfo">
         <image @tap="bindViewTap" class="userinfo-avatar" :src="userInfo.avatarUrl"></image>
-        <text class="userinfo-nickname text-info">{{userInfo.nickName}}</text>
+        <text class="userinfo-nickname text-info">{{userInfo.name}}</text>
       </div>
       <!--预防微信关闭wx获取用户信息的功能,做的控件获取用户信息的方案-->
       <!--<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="userLogin">点击登录</button>-->
     </div>
-    <div class="button-bolck" style="width: 250px;">
+    <div v-if="userInfo.avatarUrl" class="button-bolck" style="width: 250px;">
       <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='success' @click='gotoMerchantConfig'>我是团长</i-button>
-      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost'
-                @click='gotoCustomerConfig'>我是团员
-      </i-button>
+      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost' @click='gotoCustomerConfig'>我是团员</i-button>
     </div>
   </div>
 </template>
@@ -53,29 +51,51 @@
         wx.navigateTo({url})
       },
       gotoMerchantConfig: function () {
+        this.$store.commit(types.SET_USER_TYPE, 1)
         wx.navigateTo({
           url: '/pages/merchant/main'
         })
       },
       gotoCustomerConfig: function () {
+        this.$store.commit(types.SET_USER_TYPE, 2)
         wx.navigateTo({
           url: '/pages/customer/main'
         })
       },
       getUserInfo: function () {
+        let that = this
         // 调用登录接口
         wx.login({
-          success: () => {
+          success: (loginResponse) => {
             wx.getUserInfo({
-              success: res => {
-                // console.log('获取userInfo', res)
-                this.userInfo = res.userInfo
-                this.hasUserInfo = true
-                this.$store.commit(types.SET_USER_INFO, res.userInfo)
+              success: userInfoResponse => {
+                if (loginResponse.code) {
+                  that.login(loginResponse.code, userInfoResponse.userInfo)
+                }
               }
             })
+          },
+          fail: function (loginError) {
+            // that.$tips.toast('登录失败', 'none')
           }
         })
+      },
+      login: function (code, userInfo) {
+        let that = this
+        this.$portApi.common.login({code: code, ...userInfo}).then(
+          (response) => {
+            wx.setStorage({key: 'sessionId', data: 'JSESSIONID=' + response.sessionId})
+            that.$store.commit(types.SET_USER_ID, response.userId)
+            that.userInfo = userInfo
+            that.hasUserInfo = true
+            that.$store.commit(types.SET_USER_INFO, userInfo)
+            that.$tips.toast('登录成功')
+            return true
+          },
+          (response) => {
+            return false
+          }
+        )
       },
       userLogin: function (e) {
         let that = this
@@ -92,17 +112,7 @@
                   that.$tips.toast('自动登录成功', 'success', 1000)
                 },
                 fail: function () {
-                  console.log('登录状态已过期')
-                  // 过期了 重新登录 先清楚登录的状态
-                  // qcloud.clearSession()
-                  // 登录态已过期，需重新登录
-                  var options = {
-                    // 登录需要的加密信息
-                    encryptedData: e.mp.detail.encryptedData,
-                    iv: e.mp.detail.iv,
-                    userinfo: e.mp.detail.userInfo
-                  }
-                  that.getWxLogin(options)
+                  that.getUserInfo()
                 }
               })
             } else {
@@ -113,39 +123,11 @@
             console.log('获取失败', res)
           }
         })
-      },
-      getWxLogin: function ({encryptedData, iv, userinfo}) {
-        console.log('重新登录')
-        let that = this
-        wx.login({
-          success: function (loginResult) {
-            // console.log('loginResult', loginResult)
-            that.$tips.toast('登录成功', 'none')
-            wx.getUserInfo({
-              success: res => {
-                // console.log('获取userInfo', res)
-                that.userInfo = res.userInfo
-              }
-            })
-          },
-          fail: function (loginError) {
-            that.$tips.toast('登录失败', 'none')
-          }
-        })
       }
     },
     created: function () {
       // 调用应用实例的方法获取全局数据
       this.getUserInfo()
-      let test = this.$http.get('wechat/getParam', {}).then(
-        (response) => {
-          console.log('成功', response)
-        },
-        (response) => {
-          console.log('失败', response)
-        }
-      )
-      console.log(test)
     }
   }
 </script>

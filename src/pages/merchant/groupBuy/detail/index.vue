@@ -1,19 +1,19 @@
 <template>
   <div class="container">
     <!--<div class="base-info text-other">-->
-    <!--<span>团购编号: {{groupBuyId}}</span>-->
+    <!--<span>团购编号: {{id}}</span>-->
     <!--<span>团购状态: {{getStatusNickname}}</span>-->
     <!--</div>-->
     <div style="width: 100%;">
       <i-panel title="团购信息">
-        <i-input :value="groupBuyTitle" title="团购标题" disabled/>
+        <i-input :value="title" title="团购标题" disabled/>
         <i-input :value="groupBuyId" title="团购编号" disabled/>
         <i-input :value="getStatusNickname" title="团购状态" disabled/>
       </i-panel>
     </div>
     <div style="width: 100%;">
       <i-panel title="商品与销售信息">
-        <div style="width: 100%;margin-bottom: 20px" v-for="(info, index) in products" :key="index">
+        <div style="width: 100%;margin-bottom: 20px" v-for="(info, index) in groupBuyProducts" :key="index">
           <div>
             <i-cell-group>
               <i-cell url="" link-type="navigateTo">
@@ -21,8 +21,8 @@
                   <span class="title text-title">{{info.name}}</span><br/>
                   <div class="inline-info">
                     <span>商品单价:{{info.price}}￥</span>
-                    <span v-if="groupBuyStatus != 0">销售数量:{{info.sellTotalNumber}}</span>
-                    <span v-if="groupBuyStatus != 0">销售额:{{info.sellTotalNumber * (info.price)}}￥</span>
+                    <span v-if="status != 0">销售数量:{{info.sellTotalNumber}}</span>
+                    <span v-if="status != 0">销售额:{{info.sellTotalNumber * (info.price)}}￥</span>
                   </div>
                 </div>
               </i-cell>
@@ -53,9 +53,9 @@
     data: function () {
       return {
         groupBuyId: -1,
-        groupBuyStatus: -1,
-        groupBuyTitle: '',
-        products: [
+        status: -1,
+        title: '',
+        groupBuyProducts: [
           {
             name: '',
             price: -1,
@@ -69,7 +69,7 @@
     // 计算属性
     computed: {
       getStatusNickname: function () {
-        return this.getGroupBuyStatus[this.groupBuyStatus]
+        return this.getGroupBuyStatus[this.status]
       },
       ...mapGetters('group', [
         'getGroupBuyStatus'
@@ -78,45 +78,16 @@
     // 函数集合
     methods: {
       getData: function (groupBuyId) {
-        // TODO 获取团长团购商品详细 getGroupBuyProduct(groupBuyId)
-        this.products = [
-          {
-            name: '第一个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          },
-          {
-            name: '第二个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          },
-          {
-            name: '第三个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          },
-          {
-            name: '第四个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          },
-          {
-            name: '第五个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          },
-          {
-            name: '第六个商品',
-            price: 12.5,
-            sellTotalNumber: 12
-          }
-        ]
+        this.$restfulApi.product.findBuGroupBuyId(groupBuyId).then((groupBuyProducts) => {
+          console.log(groupBuyProducts)
+          this.groupBuyProducts = groupBuyProducts._embedded.groupBuyProducts
+        })
       },
       handleEtidButton: function () { // 处理编辑按钮单击事件
-        // this.groupBuyStatus
-        console.log('编辑请求请求:', '../addAndEdit/main?groupBuyId=' + this.groupBuyId + '&groupBuyStatus=' + this.groupBuyStatus)
+        // this.status
+        console.log('编辑请求请求:', '../addAndEdit/main?groupBuyId=' + this.groupBuyId + '&status=' + this.status)
         wx.navigateTo({
-          url: '/pages/merchant/groupBuy/addAndEdit/main?groupBuyId=' + this.groupBuyId + '&groupBuyStatus=' + this.groupBuyStatus + '&groupBuyTitle=' + this.groupBuyTitle
+          url: '/pages/merchant/groupBuy/addAndEdit/main?groupBuyId=' + this.groupBuyId + '&status=' + this.status + '&title=' + this.title
         })
       }
     },
@@ -128,22 +99,20 @@
       // console.log('page index created', this)
     },
     onShareAppMessage: function (object) { // 编辑转发内容
-      console.log(object.from)
-      console.log(object.target)
-      console.log(object.webViewUrl)
-      // TODO 转发url订正为客户商品展示. title修改为商家店铺和我们的商标
+      console.log(object)
       return {
-        title: '转发标题',
+        title: this.title + '-嘻果团购',
         path: 'pages/customer/groupBuys/show/main?groupBuyId' + this.groupBuyId,
-        imageUrl: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3587317807,2844810836&fm=27&gp=0.jpg'
+        imageUrl: 'https://img.yzcdn.cn/upload_files/2015/09/11/fb6bb471669d31068ad350c862da1325.jpeg'
       }
     },
     onLoad: function () { // vue 初始化加载
       this.groupBuyId = this.$mp.query.groupBuyId
-      this.groupBuyStatus = this.$mp.query.groupBuyStatus
-      this.groupBuyTitle = this.$mp.query.groupBuyTitle
+      this.status = this.$mp.query.status
+      this.title = this.$mp.query.title
+      let that = this
       wx.setNavigationBarTitle({
-        title: this.groupBuyTitle
+        title: that.title
       })
       this.getData(this.groupBuyId)
     },
@@ -235,6 +204,10 @@
   }
 
   .share_button {
+    width: 100%;
+    position: fixed;
+    bottom: 0%;
+    opacity: 0.8;
     background-color: $color-theme;
   }
 

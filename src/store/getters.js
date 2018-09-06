@@ -17,7 +17,7 @@
   },
   getters: {
     doneTodos: state => {
-      return state.todos.filter(todo => todo.done)
+      return state.todos.filter(t odo => t odo.done)
     }
   }
 })
@@ -27,11 +27,13 @@
  getters: {
   // ...
   getTodoById: (state) => (id) => {
-    return state.todos.find(todo => todo.id === id)
+    return state.todos.find(t odo => t odo.id === id)
   }
 }
  调用: store.getters.getTodoById(2)
  */
 export default {
-  openId: state => state.openId
+  openId: state => state.openId,
+  userType: state => state.userType,
+  userId: state => state.userId
 }

@@ -6,7 +6,7 @@
       <i-cell i-class="width-default" link-type="navigateTo" is-link :url="'/pages/merchant/main'">
         <i-avatar :src="userInfo.avatarUrl" size="large" shape="square"></i-avatar>
         <div style="display: inline">
-          <span class="text-info">{{userInfo.nickName}}</span>
+          <span class="text-info">{{userInfo.name}}</span>
           <span class="text-other" style="display: block;line-height: 1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;">这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.</span>
         </div>
       </i-cell>

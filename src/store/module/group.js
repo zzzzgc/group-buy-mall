@@ -2,7 +2,7 @@
 
 const state = {
   // 约定:状态码等于数组下标
-  groupBuyStatus: [
+  status: [
     '未开始',
     '进行中',
     '已结束'
@@ -16,7 +16,7 @@ const state = {
 // getters
 const getters = {
   getGroupBuyStatus: (state, getters, rootState, rootGetters) => {
-    return state.groupBuyStatus
+    return state.status
   },
   getOrderDeliverStatus: function (state, getters, rootState, rootGetters) {
     return state.orderDeliverStatus

@@ -11,15 +11,15 @@
         </i-tab>
       </i-tabs>
       <div v-if="tabKey == groups[0].status">
-        <item v-model="groups[0].groupBuysInfo" :swipeOutActions="swipeOutActionsByOn" @handleActionsChange="handleActionsChange($event, groups[0].status)" @handleItemClick="handleItemClick($event, groups[0].status)">
+        <item v-model="groups[0].groupBuy" :swipeOutActions="swipeOutActionsByOn" @handleActionsChange="handleActionsChange($event, groups[0].status)" @handleItemClick="handleItemClick($event, groups[0].status)">
         </item>
       </div>
       <div v-if="tabKey == groups[1].status">
-        <item v-model="groups[1].groupBuysInfo" :swipeOutActions="swipeOutActionsByOff" @handleActionsChange="handleActionsChange($event, groups[1].status)" @handleItemClick="handleItemClick($event, groups[1].status)">
+        <item v-model="groups[1].groupBuy" :swipeOutActions="swipeOutActionsByOff" @handleActionsChange="handleActionsChange($event, groups[1].status)" @handleItemClick="handleItemClick($event, groups[1].status)">
         </item>
       </div>
       <div v-if="tabKey == groups[2].status">
-        <item v-model="groups[2].groupBuysInfo" :swipeOutActions="swipeOutActionsByOther" @handleActionsChange="handleActionsChange($event, groups[2].status)" @handleItemClick="handleItemClick($event, groups[2].status)">
+        <item v-model="groups[2].groupBuy" :swipeOutActions="swipeOutActionsByOther" @handleActionsChange="handleActionsChange($event, groups[2].status)" @handleItemClick="handleItemClick($event, groups[2].status)">
         </item>
       </div>
     </div>
@@ -39,15 +39,15 @@
         groups: [
           {
             status: '0',
-            groupBuysInfo: []
+            groupBuy: []
           },
           {
             status: 1,
-            groupBuysInfo: []
+            groupBuy: []
           },
           {
             status: 2,
-            groupBuysInfo: []
+            groupBuy: []
           }
         ],
         swipeOutActionsByOn: [
@@ -110,82 +110,70 @@
       },
       tabChange: function (status) { // 切换标签(分离出来以复用)
         this.tabKey = status
-        this.$set(this.groups, this.tabKey, Object.assign({}, this.groups[this.tabKey], {groupBuysInfo: this.getData(this.tabKey)}))
+        this.getData(status)
+        // this.$set(this.groups, this.tabKey, Object.assign({}, {groupBuy: this.getData(this.tabKey)}))
       },
       getData: function (status) { // 获取团购列表
         this.count += 1
-        // TODO 服务器获取指定状态的团购服务数据 getGroupBuyList(status)
-        return [
-          {
-            title: '第一个团的团标题，状态：' + status + ',count:' + this.count,
-            describe: '第一个团的信息',
-            updateDate: '2018-08-20',
-            sellTotalPrice: 12053.5,
-            groupBuyId: 20180105125432123
-          },
-          {
-            title: '第二个团的团标题，状态：' + status + ',count:' + this.count,
-            describe: '第二个团的信息',
-            updateDate: '2018-08-20',
-            sellTotalPrice: 12053.5,
-            groupBuyId: 20180121035432123
-          },
-          {
-            title: '第三个团的团标题，状态：' + status + ',count:' + this.count,
-            describe: '第三个团的信息',
-            updateDate: '2018-08-20',
-            sellTotalPrice: 12053.5,
-            groupBuyId: 20180118155432123
+        this.$restfulApi.groupBuy.findByStatus(this.$store.state.userId, status).then(
+          (groupBuys) => {
+            console.log(groupBuys._embedded.groupBuys)
+            this.$set(this.groups[this.tabKey], 'groupBuy', groupBuys._embedded.groupBuys)
           }
-        ]
+        )
       },
       handleActionsChange: function (event, status) { // 选择滑动菜单的子项后
         // x 坐标 status   y坐标  groupBuyIndex   z坐标  actionIndex
         let actionIndex = event.mp.detail.index
         let groupBuyIndex = event.mp.detail.groupBuyIndex
         // 团购编码
-        let groupBuyId = this.groups[status].groupBuysInfo[groupBuyIndex].groupBuyId
+        let groupBuyId = this.groups[status].groupBuy[groupBuyIndex].id
+        let groupBuy = this.groups[status].groupBuy[groupBuyIndex]
+        // let that = this
         switch (actionIndex) {
           case 0:
             // 开启/关闭团购
             switch (status) {
               case this.groups[0].status:
-                // TODO 订正团购状态(增改) changeGroupBuyStatus(groupBuyId,status)
+                // 0 -> 1
+                groupBuy.status = this.groups[1].status
                 console.log('开启团购', groupBuyIndex, '团购编码:', groupBuyId)
                 break
               case this.groups[1].status:
-                // TODO 订正团购状态(增改) changeGroupBuyStatus(groupBuyId,status)
+                // 1 -> 2
+                groupBuy.status = this.groups[2].status
                 console.log('关闭团购', groupBuyIndex, '团购编码:', groupBuyId)
                 break
               default:
-                // TODO 设置团购为删除状态 deleteGroupBuyStatus(groupBuyId,status)
+                // 2 -> 3
+                groupBuy.status = 3
                 console.log('删除团购', groupBuyIndex, '团购编码:', groupBuyId)
             }
             break
           case 1:
-            // 删除团购
+            // ? -> 3
+            groupBuy.status = 3
             console.log('删除团购', groupBuyIndex, '团购编码:', groupBuyId)
             break
           default:
             console.log('异常的值')
         }
+        this.$portApi.groupBuy.saveGroupBuy(groupBuy).then(
+          (response) => {
+            this.tabChange(status)
+          }
+        )
         // 重新加载一次
-        this.tabChange(status)
-      },
-      startGroupBuy: function (groupBuyIndex) { // 开启团购
-        console.log('请求-更改团购状态,id:', groupBuyIndex, ',状态:', this.groupBuysInfo[groupBuyIndex].status, '->', 1)
-      },
-      endGroupBuy: function (groupBuyIndex) { // 结束团购
-        console.log('请求-更改团购状态,id:', groupBuyIndex, ',状态:', this.groupBuysInfo[groupBuyIndex].status, '->', 2)
       },
       handleItemClick: function ({mp}, status) { // 列表子项被选中
         let groupBuyIndex = mp.detail.groupBuyIndex
         // 团购编码
-        let groupBuyId = this.groups[status].groupBuysInfo[groupBuyIndex].groupBuyId
+        let groupBuyId = this.groups[status].groupBuy[groupBuyIndex].id
+        console.log(groupBuyId)
         // 团购名称
-        let groupBuyTitle = this.groups[status].groupBuysInfo[groupBuyIndex].title
+        let title = this.groups[status].groupBuy[groupBuyIndex].title
         wx.navigateTo({
-          url: '/pages/merchant/groupBuy/detail/main?groupBuyId=' + groupBuyId + '&groupBuyStatus=' + status + '&groupBuyTitle=' + groupBuyTitle
+          url: `/pages/merchant/groupBuy/detail/main?groupBuyId=${groupBuyId}&status=${status}&title=${title}`
         })
       }
     },
@@ -206,7 +194,7 @@
       // console.log('page index onLoad', this)
       // this.tabKey = this.$mp.query.status
       // this.tabKey = this.$mp.query.status
-      // this.$set(this.groups, this.tabKey, Object.assign({}, this.groups[this.tabKey], {groupBuysInfo: this.getData(this.tabKey)}))
+      // this.$set(this.groups, this.tabKey, Object.assign({}, this.groups[this.tabKey], {groupBuy: this.getData(this.tabKey)}))
     },
     mounted () { // vue加载完毕
       // console.log('mounted', this)
@@ -214,9 +202,8 @@
     onShow () { // 小程序页面显示
       if (this.$mp.query.status !== undefined) {
         this.tabKey = this.$mp.query.status
-      } else {
-        this.tabChange(this.tabKey)
       }
+      this.tabChange(this.tabKey)
     },
     onUnload () { // 小程序页面出栈
       // console.log('onUnload', this)

@@ -72,13 +72,20 @@
  */
 const state = {
   openId: '初始openId',
+  userId: 1,
+  userType: '',
+  userTypes: [
+    '',
+    'merchant',
+    'customer'
+  ],
   userInfo: {
     avatarUrl: '',
     city: '',
     country: '',
     gender: 0,
     language: '',
-    nickName: '',
+    name: '',
     province: ''
   }
 }

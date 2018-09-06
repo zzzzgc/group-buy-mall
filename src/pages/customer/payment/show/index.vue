@@ -72,7 +72,10 @@
     // 数据
     data: function () {
       return {
-        paymentAmount: 0.00
+        paymentAmount: 0.00,
+        id: '',
+        wechatPayUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112036&di=5594992704d10d7b42e9e248ceae26f5&imgtype=0&src=http%3A%2F%2Fsrc.onlinedown.net%2Fimages%2Fxcs%2F10%2F2017-06-07_59375a6f90e1f.jpg',
+        AlipayUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534589009424&di=efff4a9a2927321fe65f6f9163167dd0&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1458111359%2C4067554592%26fm%3D214%26gp%3D0.jpg'
       }
     },
     // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
@@ -82,19 +85,16 @@
     // 函数集合
     methods: {
       showWechatImg: function () {
-        // TODO 服务端加载图片地址过来
         wx.previewImage(
           {
-            urls: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112036&di=5594992704d10d7b42e9e248ceae26f5&imgtype=0&src=http%3A%2F%2Fsrc.onlinedown.net%2Fimages%2Fxcs%2F10%2F2017-06-07_59375a6f90e1f.jpg']
+            urls: [this.wechatPayUrl]
           }
         )
       },
       showAlipayImg: function () {
-        // TODO 服务端加载图片地址过来
         wx.previewImage(
           {
-            urls: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534589009424&di=efff4a9a2927321fe65f6f9163167dd0&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1458111359%2C4067554592%26fm%3D214%26gp%3D0.jpg']
-            // urls: ['https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112034&di=09a268975de5dfa7346508393789c635&imgtype=0&src=http%3A%2F%2Fblogcdnimg.clewm.net%2F2017%2F06%2F1342e56aa500d5c9f4a4ba429811c2731495873471.jpg']
+            urls: [this.AlipayUrl]
           }
         )
       },
@@ -105,6 +105,9 @@
           success: function (res) {
           }
         })
+      },
+      getData: function () {
+        // TODO 服务端加载支付图片地址过来 getPayImg()
       }
     },
     // 组件注册
@@ -124,6 +127,8 @@
     onShow: function () { // 小程序页面显示
       // options = this.$root.$mp.appOptions
       this.paymentAmount = this.$mp.query.paymentAmount
+      this.groupBuyId = this.$mp.query.id
+      console.log('获取paymentAmount', this.paymentAmount + ' ,id', this.id)
       // console.log('onShow', this)
     },
     onUnload: function () { // 小程序页面出栈

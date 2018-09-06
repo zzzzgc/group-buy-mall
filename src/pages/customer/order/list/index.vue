@@ -7,8 +7,7 @@
         <span>{{groupBuy.merchantInfo.shopName}}</span>
       </div>
 
-      <div class="group-item" v-for="(order, orderIndex) in groupBuy.orderInfo" :key="orderIndex"
-           @click="handleOrderClick(groupBuyIndex, orderIndex)">
+      <div class="group-item" v-for="(order, orderIndex) in groupBuy.orderInfo" :key="orderIndex" @click="handleOrderClick(groupBuyIndex, orderIndex)">
         <div>
           <div>{{order.groupBuyName}}</div>
           <div><span style="color: red">{{order.payPrice}}</span>￥</div>
@@ -37,7 +36,7 @@
     // 函数集合
     methods: {
       getData: function () {
-        // TODO 通过服务加载数据,根据openId
+        // TODO 获取用户的所有团长的部分信息和所有团购服务信息 getGroupBuyUserInfoAndGroupBuy()
         this.detail = {
           groupBuys: [
             {
@@ -92,7 +91,7 @@
         let orderId = order.id
         let createTime = order.createTime
         wx.navigateTo({
-          url: '/pages/common/order/detail/main?orderId=' + orderId + '&createTime=' + createTime
+          url: '/pages/common/order/detail/main?orderId=' + orderId + '&createTime=' + createTime + '&isCustomer=true'
         })
       }
     },

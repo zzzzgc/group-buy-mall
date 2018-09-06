@@ -13,6 +13,8 @@
 // 设置微信用户openId
 export const SET_OPEN_ID = 'SET_OPEN_ID'
 export const SET_USER_INFO = 'SET_USER_INFO'
+export const SET_USER_TYPE = 'SET_USER_TYPE'
+export const SET_USER_ID = 'SET_USER_ID'
 
 /**
  * 测试类-函数名

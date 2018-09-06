@@ -57,17 +57,22 @@ import * as types from './mutation-types'
     })
   }
 }
-
  */
 const mutations = {
   // [方法名](参数1,参数2...){方法}
-  [types.SET_OPEN_ID] (state, v) {
+  [types.SET_OPEN_ID]: function (state, v) {
     state.openId = v
   },
-  [types.SET_TEST_TEXT] (state, text) {
+  [types.SET_USER_TYPE]: function (state, v) {
+    state.userType = v
+  },
+  [types.SET_USER_ID]: function (state, v) {
+    state.userId = v
+  },
+  [types.SET_TEST_TEXT]: function (state, text) {
     state.testText = text
   },
-  [types.SET_USER_INFO] (state, userInfo) {
+  [types.SET_USER_INFO]: function (state, userInfo) {
     state.userInfo = userInfo
   }
 }

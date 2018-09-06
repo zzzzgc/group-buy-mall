@@ -20,7 +20,7 @@
     methods: {
       getData: function () {
         this.detail = {}
-        // TODO 通过服务加载数据,根据openId
+        // TODO 通过服务加载数据,根据openId(研发中)
       }
     },
     // 组件注册

@@ -5,10 +5,10 @@
 
     <!--用户基础信息-->
     <div class="user-info-base">
-      <image class="user-info-base-image" :src="detail.userInfo.imageUrl"></image>
+      <image class="user-info-base-image" :src="detail.user.imageUrl"></image>
       <div class="user-info-base-name">
-        <span class="text-other">{{detail.userInfo.nickName}}</span>
-        <span class="text-title-main">{{detail.userInfo.shopName}}</span>
+        <span class="text-other">{{detail.user.name}}</span>
+        <span class="text-title-main">{{detail.user.shopName}}</span>
       </div>
     </div>
 
@@ -17,16 +17,16 @@
       <div class="user-info-detail-contact">
         <div>
           <i-icon type="mobilephone" size="28"/>
-          <span class="text-other">{{detail.userInfo.phone}}</span>
+          <span class="text-other">{{detail.user.phone}}</span>
         </div>
         <div>
           <i-icon type="businesscard" size="28"/>
-          <span class="text-other">{{detail.userInfo.wechatName}}</span>
+          <span class="text-other">{{detail.user.wechatName}}</span>
         </div>
       </div>
       <div class="user-info-detail-address">
         <i-icon type="flag" size="28"/>
-        <span class="text-other">{{detail.userInfo.address}}</span>
+        <span class="text-other">{{detail.user.address}}</span>
       </div>
     </div>
 
@@ -34,8 +34,7 @@
 
     <!--团购服务简介-->
     <div class="group-service">
-      <div class="list-item" v-for="(groupBuySetting, groupBuyIndex) in detail.groupBuySettings" :key="groupBuyIndex"
-           @click="handleGroupClick(groupBuyIndex)">
+      <div class="list-item" v-for="(groupBuySetting, groupBuyIndex) in detail.groupBuys" :key="groupBuyIndex" @click="handleGroupClick(groupBuyIndex)">
         <div class="group-item-info">
           <div class="text-title">{{groupBuySetting.title}}</div>
           <div class="group-item-info-other">
@@ -44,7 +43,7 @@
           </div>
         </div>
         <div class="group-item-image">
-          <image class="group-item-image-item" v-for="(image, imageIndex) in groupBuySetting.images" :key="imageIndex"
+          <image class="group-item-image-item" v-for="(image, imageIndex) in groupBuySetting.groupBuyProductsImages" :key="imageIndex"
                  :src="image.url"></image>
         </div>
       </div>
@@ -69,7 +68,7 @@
     // 计算属性
     computed: {
       getStatusNickname: function () {
-        return this.getGroupBuyStatus[this.groupBuyStatus]
+        return this.getGroupBuyStatus[this.status]
       },
       ...mapGetters('group', [
         'getGroupBuyStatus'
@@ -77,64 +76,64 @@
     },
     // 函数集合
     methods: {
-      getData: function (groupBuyId) { // 请求数据
-        // TODO 从服务加载团长店铺信息
-        this.detail = {
-          userInfo: {
-            phone: 18718840426,
-            nickName: '用户昵称',
-            wechatName: '微信名称',
-            imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535357610&di=ffea7ccd1758882bcf7af2d24fdd708d&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.vxinhao.cn%2FPublic%2Fnews%2Fimage%2F20160317%2F20160317011219_42773.jpg',
-            shopName: '豪大大店铺',
-            address: '广东省广州市某个山卡拉的地方'
-          },
-          groupBuySettings: [
-            {
-              id: 654987987,
-              status: 1,
-              title: '夏秋国产专场',
-              createTime: Date.now(),
-              describe: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
-              images: [
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
-              ]
-            },
-            {
-              id: 165498798,
-              status: 0,
-              title: '秋季越南专场',
-              createTime: Date.now(),
-              describe: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
-              images: [
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
-              ]
-            },
-            {
-              id: 96574687,
-              status: 2,
-              title: '夏季泰国专场',
-              createTime: Date.now(),
-              describe: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
-              images: [
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
-                {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
-              ]
-            }
-          ]
+      // 请求数据
+      getData: function (groupBuyId) {
+        // TODO 获取团长用户的用户信息 getMerchantUserInfoAndShopInfo()
+        this.detail.user = {
+          phone: 18718840426,
+          name: '用户昵称',
+          wechatName: '微信名称',
+          imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1535357610&di=ffea7ccd1758882bcf7af2d24fdd708d&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.vxinhao.cn%2FPublic%2Fnews%2Fimage%2F20160317%2F20160317011219_42773.jpg',
+          shopName: '豪大大店铺',
+          address: '广东省广州市某个山卡拉的地方'
         }
+        // TODO 获取团长的所有团购服务(部分) getMerchantUserGroupBuys()
+        this.detail.groupBuys = [
+          {
+            id: 654987987,
+            status: 1,
+            title: '夏秋国产专场',
+            createTime: Date.now(),
+            descriptor: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
+            groupBuyProductsImages: [
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
+            ]
+          },
+          {
+            id: 165498798,
+            status: 0,
+            title: '秋季越南专场',
+            createTime: Date.now(),
+            descriptor: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
+            groupBuyProductsImages: [
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
+            ]
+          },
+          {
+            id: 96574687,
+            status: 2,
+            title: '夏季泰国专场',
+            createTime: Date.now(),
+            descriptor: '这是长长的描述信息,长长的,长长的,长长的,长长的,长长的',
+            groupBuyProductsImages: [
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'},
+              {url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3582343643,1105585195&fm=11&gp=0.jpg'}
+            ]
+          }
+        ]
       },
       handleGroupClick: function (groupBuyIndex) { // 团购服务被单击
-        let groupBuyId = this.detail.groupBuySettings[groupBuyIndex].id
+        let groupBuyId = this.detail.groupBuys[groupBuyIndex].id
         wx.navigateTo({
-          url: '../show/main?groupBuyId=' + groupBuyId
+          url: '../show/main?id=' + groupBuyId
         })
       }
     },
@@ -177,6 +176,7 @@
     align-items: center;
     justify-content: center;
     .user-info-base-image {
+      background-color: #888888;
       margin: 5px 0;
       width: 80px;
       height: 80px;

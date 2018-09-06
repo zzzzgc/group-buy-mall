@@ -21,7 +21,6 @@
     methods: {
       getData: function () {
         this.detail = {}
-        // TODO 通过服务加载数据,根据openId
       }
     },
     // 组件注册

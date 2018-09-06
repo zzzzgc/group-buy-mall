@@ -6,25 +6,25 @@
     <!--主面板-->
     <div class="main-panel">
       <!--上半部分-->
-      <!--<i-cell url="../list/main?groupBuyId= + groupBuyId" is-link>-->
       <i-cell @click="handleUserClick" is-link>
         <div class="main-panel-up">
-          <image class="main-panel-up-head-image" :src="detail.userInfo.imageUrl"></image>
+          <image class="main-panel-up-head-image" :src="detail.user.imageUrl"></image>
           <div>
             <div class="main-panel-up-text">
               <i-icon type="addressbook" size="17"/>
-              <span>{{detail.userInfo.nickName}}</span>
+              <span>{{detail.user.nickName}}</span>
             </div>
             <div class="main-panel-up-text">
               <i-icon type="shop_fill" size="17"/>
-              <span>{{detail.userInfo.shopName}}</span>
+              <span v-if="detail.user.shopName">{{detail.user.shopName}}</span>
+              <span v-else>未绑定店铺</span>
             </div>
           </div>
         </div>
       </i-cell>
       <!--下半部分-->
       <div class="main-panel-bottom">
-        <span class="main-panel-bottom-desc text-other">公告: {{detail.groupBuySetting.describe}}</span>
+        <span class="main-panel-bottom-desc text-other">公告: {{detail.groupBuy.descriptor}}</span>
         <div class="main-panel-bottom-status-class">
           <span class="main-panel-bottom-status text-other">团购{{getStatusNickname}}</span>
         </div>
@@ -32,26 +32,64 @@
     </div>
 
     <div style="width: 80%;">
-      <div class="product-list" v-for="(product, productIndex) in detail.groupBuySetting.products" :key="productIndex">
-        <image class="product-image" :src="product.images[0].url"></image>
+      <div class="product-list" v-for="(product, productIndex) in detail.groupBuy.groupBuyProducts" :key="productIndex">
+        <image class="product-image" :src="product.groupBuyProductImages[0].url"></image>
         <div class="product-info">
-          <span class="text-info">{{product.name}}</span>
-          <span class="text-other">{{product.describe}}</span>
-          <span class="text-info">价格:{{product.price}}￥</span>
-          <i-input-number v-if="detail.groupBuySetting.groupBuyStatus === 1" :value="product.number" min="1" max="10000"
-                          @change="handleProductNumberChange($event, productIndex)"/>
+          <span class="text-other">{{product.name}}</span>
+          <!--<span class="text-other">{{product.descriptor}}</span>-->
+          <span class="text-other">价格: <span style="color: red;font-size: 18px">{{product.price}}￥</span></span>
+          <i-input-number v-if="detail.groupBuy.status === 1" :value="product.number" min="0" max="10000" @change="handleProductNumberChange($event, productIndex)"/>
         </div>
       </div>
     </div>
 
-    <div style="width: 100%;">
-      <button class="submit-order" :disabled="!detail.groupBuySetting.groupBuyStatus == 1" style="padding: 0"
-              @click="handleSubmitOrderClick">
+    <div style="width: 100%;" v-if="detail.groupBuy.status === 1">
+      <button class="submit-order" :disabled="!detail.groupBuy.status == 1||!getTotalPrice" style="padding: 0" @click="handleSubmitOrderClick">
         <div class="total-price">
           <i-icon type="publishgoods_fill" size="28"/>
-          合计:{{getTotalPrice}}￥ 提交订单
+          合计:{{getTotalPrice}}￥ {{isEdit?'编辑':'提交'}} 订单
         </div>
       </button>
+    </div>
+
+    <div class="pre_edit_group" @click="handleMainButton">
+      <i-icon size="25" type="homepage"/>
+      <span style="font-size: 10px">团员<br>首页</span>
+    </div>
+
+    <!--物流信息-->
+    <div style="width: 100%;">
+      <i-drawer mode="right" :visible="on_off.isEditLogisticsInfo" mask-closable="false">
+        <view class="demo-container">
+          <i-tabs :current="detail.order.logisticsType" @change="handleTypeLogisticsChange">
+            <i-tab v-if="detail.groupBuy.canDistribution" key="1" title="配送到家"></i-tab>
+            <i-tab v-if="detail.groupBuy.canNoutoasiakas" key="2" title="自提"></i-tab>
+          </i-tabs>
+          <div v-if="detail.order.logisticsType == 1">
+            <!--配送到家-->
+            <i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名" @change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>
+            <i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话" @change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>
+            <i-input :value="detail.order.address" title="收获地址" placeholder="请输入收获完整地址,包含省市区和详细地址" @change="orderChange('address', $event.mp.detail.detail.value)"></i-input>
+            <i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注" @change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>
+          </div>
+          <div v-else>
+            <!--自提-->
+            <i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名" @change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>
+            <i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话" @change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>
+            <i-panel title="在下方选择自行提取货物的地点">
+              <radio-group class="radio-group-class" @change="handleNoutoasiakasChange">
+                <div v-for="(noutoasiakas, noutoasiakasIndex) in detail.groupBuy.groupBuyNoutoasiakases" :key="noutoasiakasIndex">
+                  <radio :value="noutoasiakasIndex" :id="noutoasiakas.id+'noutoasiakasId'" :checked="false"/>
+                  <label class="text-other" :for="noutoasiakas.id+'noutoasiakasId'" style="display: inline">{{noutoasiakas.address}}</label>
+                </div>
+              </radio-group>
+            </i-panel>
+            <i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注(可选)" @change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>
+          </div>
+          <i-button @click="addOrUpdateOrderClick(1)" type="primary">确定</i-button>
+          <i-button @click="addOrUpdateOrderClick(0)" type="primary">取消</i-button>
+        </view>
+      </i-drawer>
     </div>
   </div>
 </template>
@@ -63,8 +101,74 @@
     // 数据
     data: function () {
       return {
-        groupBuyId: -1,
-        detail: {}
+        on_off: {
+          isEditLogisticsInfo: false
+        },
+        isEdit: false,
+        id: -1,
+        detail: {
+          user: {
+            id: 0,
+            name: '',
+            imageUrl: '',
+            shopName: ''
+          },
+          groupBuy: {
+            id: 0,
+            status: 0,
+            canNoutoasiakas: true,
+            canDistribution: true,
+            title: '',
+            orders: [
+              {
+                isDelivery: false,
+                logisticsType: 1,
+                userName: '',
+                phone: '',
+                merchantRemark: '',
+                customerRemark: '',
+                noutoasiakasId: 0,
+                noutoasiakasName: '',
+                noutoasiakasAddress: '',
+                address: '',
+                createTime: '',
+                orderProducts: []
+              }
+            ],
+            groupBuyNoutoasiakases: [],
+            groupBuyProducts: [
+              {
+                name: '',
+                price: 0,
+                descriptor: '',
+                limitQuantity: false,
+                number: 0,
+                quantity: 0,
+                groupBuyProductsImages: [
+                  {
+                    url: '',
+                    id: 0
+                  }
+                ]
+              }
+            ],
+            descriptor: ''
+          },
+          order: {
+            isDelivery: false,
+            logisticsType: 1,
+            userName: 'asdfasdf',
+            phone: '46549879',
+            merchantRemark: '',
+            customerRemark: '',
+            noutoasiakasId: 1,
+            noutoasiakasName: '',
+            noutoasiakasAddress: '',
+            address: 'asdfasdf',
+            createTime: '',
+            orderProducts: []
+          }
+        }
       }
     },
     // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
@@ -72,13 +176,13 @@
     // 计算属性
     computed: {
       getStatusNickname: function () {
-        return this.getGroupBuyStatus[this.detail.groupBuySetting.groupBuyStatus]
+        return this.getGroupBuyStatus[this.detail.groupBuy.status]
       },
       ...mapGetters('group', [
         'getGroupBuyStatus'
       ]),
       getTotalPrice: function () {
-        return this.detail.groupBuySetting.products.reduce(
+        return this.detail.groupBuy.groupBuyProducts.reduce(
           (preValue, curValue, index, array) => {
             // 由于除的是100 不会产生无限循环小数,不用四舍五入到2位小数
             return (preValue * 1000 + (curValue.price * 1000 * curValue.number)) / 1000
@@ -89,159 +193,140 @@
     },
     // 函数集合
     methods: {
-      getData: function (groupBuyId) {
-        // TODO 从后台获取数据,根据groupBuyId
-        this.detail = {
-          userInfo: {
-            nickName: '我是xxx',
-            imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534514942363&di=e061488f47e604bcd44200ce59811134&imgtype=0&src=http%3A%2F%2Fimg010.hc360.cn%2Fm1%2FM04%2F0E%2F40%2FwKhQcFQlIAaELPsiAAAAAN1e96w230.jpg',
-            shopName: '豪大大店铺'
-          },
-          groupBuySetting: {
-            groupBuyId: 163546749879,
-            groupBuyStatus: 1,
-            title: '团长的团购标题',
-            describe: '团长的描述信息拉斯柯达解放路卡接收到了房间爱里的水开放接口时代峻峰阿拉萨的看风景阿来得快分阿流口水的房间拉的说法甲方as来得快就',
-            products: [
-              {
-                name: '测试商品0号',
-                price: 13.55,
-                describe: '阿里斯顿会计分录卡萨丁交付了肯德基安防监控',
-                limitQuantity: true,
-                number: 12,
-                quantity: 123,
-                images: [
-                  {
-                    url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
-                    productImagesId: 0
-                  },
-                  {
-                    url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
-                    productImagesId: 1
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
-                    productImagesId: 2
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 3
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 4
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 5
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 6
-                  }
-                ]
-              },
-              {
-                name: '测试商品0号',
-                price: 13.55,
-                describe: '阿里斯顿会计分录卡萨丁交付了肯德基安防监控',
-                limitQuantity: true,
-                number: 45,
-                quantity: 123,
-                images: [
-                  {
-                    url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
-                    productImagesId: 0
-                  },
-                  {
-                    url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
-                    productImagesId: 1
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
-                    productImagesId: 2
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 3
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 4
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 5
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 6
-                  }
-                ]
-              },
-              {
-                name: '测试商品0号',
-                price: 13.30,
-                describe: '阿里斯顿会计分录卡萨丁交付了肯德基安防监控',
-                limitQuantity: true,
-                number: 1,
-                quantity: 123,
-                images: [
-                  {
-                    url: 'http://img3.imgtn.bdimg.com/it/u=1357902460,900753575&fm=27&gp=0.jpg',
-                    productImagesId: 0
-                  },
-                  {
-                    url: 'http://img4.imgtn.bdimg.com/it/u=737638649,2148164357&fm=27&gp=0.jpg',
-                    productImagesId: 1
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1208276097,1809955355&fm=27&gp=0.jpg',
-                    productImagesId: 2
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 3
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 4
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 5
-                  },
-                  {
-                    url: 'http://img2.imgtn.bdimg.com/it/u=1302766499,1339989639&fm=11&gp=0.jpg',
-                    productImagesId: 6
-                  }
-                ]
+      // 加载数据
+      getData: function (groupBuyId, orderId) {
+        let that = this
+        // 获取团购
+        this.$portApi.groupBuy.toGroupBuyProductImage(groupBuyId).then(
+          groupBuy => {
+            that.$set(that.detail, 'groupBuy', groupBuy)
+            // 获取团长用户信息
+            this.$restfulApi.user.findByGroupBuyId(groupBuyId).then(
+              (user) => {
+                that.$set(that.detail, 'user', user)
               }
-            ]
+            )
+            // 团购商品添加计数器
+            that.detail.groupBuy.groupBuyProducts.forEach(
+              groupBuyProduct => {
+                groupBuyProduct.number = 0
+              }
+            )
           }
+        )
+        // 是否是编辑订单
+        if (orderId) {
+          this.isEdit = true
+          this.$restfulApi.order.findById(orderId).then(
+            (order) => {
+              this.detail.order = order
+            }
+          )
+        } else {
+          that.detail.order.groupBuyId = that.detail.groupBuy.id
+          that.detail.order.logisticsType = that.detail.groupBuy.canDistribution ? 1 : 2
         }
       },
+      // 修改商品数量
       handleProductNumberChange: function ({mp}, productIndex) {
-        this.$set(this.detail.groupBuySetting.products, productIndex, Object.assign({}, this.detail.groupBuySetting.products[productIndex], {number: mp.detail.value}))
+        this.$set(this.detail.groupBuy.groupBuyProducts, productIndex, Object.assign({}, this.detail.groupBuy.groupBuyProducts[productIndex], {number: mp.detail.value}))
+        // this.detail.groupBuy.groupBuyProducts[productIndex].id
+        // this.detail.order.orderProducts.find()
       },
-      handleSubmitOrderClick: function () { // 提交订单
-        // TODO 提交到服务端
-        let totalPrice = this.detail.groupBuySetting.products.reduce(
+      handleSubmitOrderClick: function () { // 提交新订单
+        this.on_off.isEditLogisticsInfo = true
+      },
+      handleUserClick: function () { // 团长详细
+        wx.navigateTo({
+          url: '/pages/customer/groupBuy/list/main?id=' + this.id
+        })
+      },
+      // 切换物流方式
+      handleTypeLogisticsChange: function ({mp}) {
+        this.detail.order.logisticsType = mp.detail.key
+      },
+      // 修改自提点
+      handleNoutoasiakasChange: function ({mp}) {
+        let noutoasiakasIndex = parseInt(mp.detail.value)
+        let noutoasiakas = this.detail.groupBuy.groupBuyNoutoasiakases[noutoasiakasIndex]
+        console.log(noutoasiakasIndex, noutoasiakas)
+        this.detail.order.noutoasiakasId = noutoasiakas.id
+        this.detail.order.noutoasiakasName = noutoasiakas.nickName
+        this.detail.order.noutoasiakasAddress = noutoasiakas.address
+      },
+      orderChange: function (key, value) {
+        this.detail.order[key] = value
+      },
+      // 提交,添加或修改订单
+      addOrUpdateOrderClick: function (status) {
+        if (!status) {
+          this.on_off.isEditLogisticsInfo = false
+          return
+        }
+        let msg = this.verifyOrder()
+        if (msg) {
+          this.$tips.toast(msg, 'none', 2000)
+          //  todo return
+        }
+        let that = this
+        let totalPrice = this.detail.groupBuy.groupBuyProducts.reduce(
           (preValue, curValue, index, array) => {
             // 由于除的是100 不会产生无限循环小数,不用四舍五入到2位小数
             return (preValue * 1000 + (curValue.price * 1000 * curValue.number)) / 1000
           },
           0.0
         )
-        // 跳转到支付页面
+        // 把购买的商品数据载入到订单中
+        this.detail.order.userHeadImage = this.$store.state.userInfo.avatarUrl
+        this.detail.order.orderProducts = []
+        this.detail.order.totalPrice = totalPrice
+        console.log(this.detail.order.groupBuy)
+        this.detail.groupBuy.groupBuyProducts.forEach(
+          groupBuyProduct => {
+            console.log(groupBuyProduct.id)
+            if (groupBuyProduct.number > 0) {
+              let orderProduct = {
+                // imageUrl: '',
+                name: groupBuyProduct.name,
+                number: groupBuyProduct.number,
+                price: groupBuyProduct.price,
+                groupBuyProductId: groupBuyProduct.id,
+                groupBuyProduct: groupBuyProduct,
+                imageUrl: groupBuyProduct.groupBuyProductImages[0].url
+              }
+              that.detail.order.orderProducts.push(orderProduct)
+            }
+          }
+        )
+        this.$portApi.order.save(this.detail.order, this.detail.groupBuy.id, this.detail.user.id).then(
+          (response) => {
+            // 跳转到支付页面
+            wx.navigateTo({
+              url: `/pages/customer/payment/show/main?paymentAmount=${totalPrice}&id=${that.detail.user.id}`
+            })
+            this.on_off.isEditLogisticsInfo = false
+          }
+        )
+      },
+      // 跳转到首页
+      handleMainButton: function () {
         wx.navigateTo({
-          url: '../../payment/show/main?paymentAmount=' + totalPrice
+          url: '/pages/customer/main'
         })
       },
-      handleUserClick: function () { // 团长详细
-        wx.navigateTo({
-          url: '../list/main?groupBuyId=' + this.groupBuyId
-        })
+      verifyOrder: function () {
+        if (this.detail.order.name === '') return '联系人姓名不可以为空'
+        if (this.detail.order.phone === '') return '联系人电话不可以为空'
+        if (this.detail.order.logisticsType === 1) {
+          // 配送
+          if (this.detail.order.address === '') return '收货地址不可以为空'
+        } else {
+          // 自提
+          if (this.detail.order.noutoasiakasId === 0) return '必须选择一个自行提取货物的地点'
+        }
+        // address: '北京省北京市王府井拉圣诞节疯阿士大夫撒旦撒地方规范狂',
+        //   name: '井口拉斯科',
+        //   id: 6879878
       }
     },
     // 组件注册
@@ -255,7 +340,12 @@
       // options = this.$root.$mp.query
       console.log('跳转到show携带的参数是:', this.$mp.query)
       this.groupBuyId = this.$mp.query.groupBuyId
-      this.getData(this.groupBuyId)
+      this.orderId = this.$mp.query.orderId
+      let isTest = false
+      if (isTest) {
+        this.orderId = 5
+      }
+      this.getData(this.groupBuyId, this.orderId)
       // console.log('page index onLoad', this)
     },
     mounted: function () { // vue加载完毕
@@ -363,5 +453,28 @@
       align-items: center;
       justify-content: center;
     }
+  }
+
+  .demo-container {
+    width: 100vw;
+    /*width: 80%;*/
+    height: 100%;
+    background: #fff;
+  }
+
+  .pre_edit_group {
+    border-radius: 10px;
+    background-color: $color-theme;
+    opacity: 0.5;
+    padding: 5px;
+    width: 25px;
+    position: fixed;
+    top: 45%;
+    right: 3%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 </style>

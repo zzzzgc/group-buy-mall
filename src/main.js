@@ -4,16 +4,21 @@ import store from './store/index'
 import { $Toast } from '../static/dist/base/index'
 import Tips from './common/js/tips'
 import fly from './http/config'
+import * as api from './http/api'
+import config from './config'
 
 // 生产环境
 Vue.config.productionTip = false
 App.mpType = 'app'
 
 // 定义全局属性
+Vue.prototype.$portApi = api.portApi
+Vue.prototype.$restfulApi = api.restfulApi
 Vue.prototype.$http = fly
 Vue.prototype.$store = store
 Vue.prototype.$Toast = $Toast
 Vue.prototype.$tips = Tips
+Vue.prototype.$config = config
 
 const app = new Vue(App)
 app.$mount()
