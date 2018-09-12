@@ -158,7 +158,7 @@
           default:
             console.log('异常的值')
         }
-        this.$portApi.groupBuy.saveGroupBuy(groupBuy).then(
+        this.$portApi.groupBuy.save(groupBuy).then(
           (response) => {
             this.tabChange(status)
           }

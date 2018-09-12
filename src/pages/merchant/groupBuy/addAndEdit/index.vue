@@ -104,8 +104,8 @@
       </i-panel>
     </div>
     <div class="from-button">
-      <i-button v-if="!isEdit" long="true" type="success" @click="formSubmit" id="foot">确认新建团购</i-button>
-      <i-button v-else long="true" type="success" @click="formSubmit" id="foot">确认修改团购</i-button>
+      <i-button v-if="!isEdit" long="true" :disabled="on_off.canSend" type="success" @click="formSubmit" id="foot">确认新建团购</i-button>
+      <i-button v-else long="true" :disabled="on_off.canSend" type="success" @click="formSubmit" id="foot">确认修改团购</i-button>
     </div>
   </div>
 </template>
@@ -127,14 +127,14 @@
       customItem: '全部',
       // 用户自提点
       noutoasiakas: [
-        {
-          address: '',
-          region: [],
-          detailAddress: '',
-          nickName: '',
-          addressId: -1,
-          checked: true
-        }
+        // {
+        //   address: '',
+        //   region: [],
+        //   detailAddress: '',
+        //   nickName: '',
+        //   addressId: -1,
+        //   checked: true
+        // }
       ],
       // 用户团购
       groupBuy: {
@@ -161,20 +161,22 @@
           //   ]
           // }
         ],
-        title: '回填标题',
-        descriptor: '回调描述',
+        title: '',
+        descriptor: '',
         canDistribution: true,
         canNoutoasiakas: true
       },
       on_off: {
-        addNoutoasiakasSwitch: false
+        addNoutoasiakasSwitch: false,
+        canSend: false,
+        nowEdit: false
       },
       // 临时记录自提点
       tempNoutoasiakasInfo: {
         address: '',
-        region: ['北京市', '地极限', '其他'],
-        detailAddress: '拉开圣诞节福利科技',
-        nickName: '家里',
+        region: ['', '', ''],
+        detailAddress: '',
+        nickName: '',
         addressId: -1,
         checked: true
       },
@@ -201,9 +203,17 @@
     // 函数集合
     methods: {
       formSubmit: function () {
-        if (!this.formSubmitVerify()) {
+        this.on_off.canSend = true
+        // 按钮视图状态更新需要时间,如果用户狂点还是有概率触发按钮异步调用该方法.需要添加第二道防线,直接过滤多余的异步调用.99%的无懈可击,有有可能两个异步请求都执行到this.on_off.nowEdit = true 于是都过了.
+        if (this.on_off.nowEdit) {
           return
         }
+        if (!this.formSubmitVerify()) {
+          this.on_off.canSend = false
+          return
+        }
+        // 第一个才能调用
+        this.on_off.nowEdit = true
         this.uploadImageInit(
           (cellbackParam) => {
             // 等待图片上传完毕后再提交团购信息
@@ -244,9 +254,9 @@
                   initCount += 1
                   that.uploadImage(groupBuyProductImages, function () {
                     if (--initCount) {
-                      cellback()
                       console.log(initCount)
                     } else {
+                      cellback()
                       console.log(initCount)
                     }
                   })
@@ -419,7 +429,7 @@
         let that = this
         if (that.isEdit) {
           // 用户编辑团购,回填团购自提点 TODO 有可能不用了.靠groupBuy
-          that.$restfulApi.noutoasiakas.findbyGrouBuyId(that.id).then(
+          that.$restfulApi.noutoasiakas.findbyGrouBuyId(that.groupBuyId).then(
             (groupBuyNResponse) => {
               that.noutoasiakas = groupBuyNResponse._embedded.groupBuyNoutoasiakases
             }

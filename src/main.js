@@ -33,15 +33,16 @@ export default {
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
-    },
-    tabBar: {
-      list: [{
-        pagePath: 'pages/index/main',
-        text: '调试页面'
-      }, {
-        pagePath: 'pages/standard/main',
-        text: '参考'
-      }]
     }
+    // ,
+    // tabBar: {
+    //   list: [{
+    //     pagePath: 'pages/index/main',
+    //     text: '调试页面'
+    //   }, {
+    //     pagePath: 'pages/standard/main',
+    //     text: '参考'
+    //   }]
+    // }
   }
 }

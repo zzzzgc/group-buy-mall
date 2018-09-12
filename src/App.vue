@@ -19,7 +19,8 @@
     flex-direction: column;
     align-items: center;
     /*justify-content: center;*/
-    justify-content: space-between;
+    justify-content: center;
+    /*justify-content: space-between;*/
     /*padding: rpx(200) 0 0 0;*/
     box-sizing: border-box;
   }

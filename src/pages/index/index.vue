@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 100px" class="container">
+  <div style="padding-top: 80px" class="container main">
     <div>
       <text class="home-title text-title-main">水果社区团购</text>
     </div>
@@ -8,15 +8,16 @@
         <button open-type="getUserInfo" @getuserinfo="getUserInfo">获取头像昵称</button>
       </div>
       <div v-else class="userinfo">
-        <image @tap="bindViewTap" class="userinfo-avatar" :src="userInfo.avatarUrl"></image>
-        <text class="userinfo-nickname text-info">{{userInfo.name}}</text>
+        <image class="userinfo-avatar" :src="userInfo.avatarUrl"></image>
+        <!--<image @tap="bindViewTap" class="userinfo-avatar" :src="userInfo.avatarUrl"></image>-->
+        <text class="userinfo-nickname text-info">{{userInfo.nickName}}</text>
       </div>
       <!--预防微信关闭wx获取用户信息的功能,做的控件获取用户信息的方案-->
       <!--<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="userLogin">点击登录</button>-->
     </div>
     <div v-if="userInfo.avatarUrl" class="button-bolck" style="width: 250px;">
-      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='success' @click='gotoMerchantConfig'>我是团长</i-button>
-      <i-button :disabled="!userInfo.avatarUrl" class='home-button text-button' type='ghost' @click='gotoCustomerConfig'>我是团员</i-button>
+      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='success' @click='gotoMerchantConfig'><span class="text-title">我是团长</span></i-button>
+      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='primary' @click='gotoCustomerConfig'><span class="text-title">我是团员</span></i-button>
     </div>
   </div>
 </template>
@@ -82,6 +83,8 @@
       },
       login: function (code, userInfo) {
         let that = this
+        userInfo.weChatName = userInfo.nickName
+        userInfo.imageUrl = userInfo.avatarUrl
         this.$portApi.common.login({code: code, ...userInfo}).then(
           (response) => {
             wx.setStorage({key: 'sessionId', data: 'JSESSIONID=' + response.sessionId})
@@ -134,6 +137,14 @@
 
 <style lang="scss" scoped>
   page {
+    .main {
+      height: 100%;
+      width: 100%;
+      /*background:url("http://localhost:8100/images/main.jpg") no-repeat 10px center;*/
+      /*vertical-align: middle;*/
+      /*background-image: url("http://localhost:8100/images/main.jpg");*/
+      /*background-size: contain;*/
+    }
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -147,19 +158,25 @@
         width: rpx(128);
         height: rpx(128);
         margin: rpx(30) 0;
-        border-radius: 50%;
+        border-radius: 5px;
       }
       .userinfo-nickname {
+        color: black;
         margin: 0;
         display: block;
       }
     }
 
     .home-title {
+      font-weight: 900
     }
 
     .button-bolck {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
       .home-button {
+        font-weight: 900;
         width: rpx(500);
         margin: 0;
       }

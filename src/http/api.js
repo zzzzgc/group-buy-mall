@@ -106,12 +106,15 @@ export const restfulApi = {
   user: {
     findByGroupBuyId: (groupBuyId) => {
       return apiGet(`/users/search/findByGroupBuyId?groupBuyId=${groupBuyId}`)
+    },
+    findById: (userId) => {
+      return apiGet(`/users/${userId}`)
     }
   }
 }
 /**
  * service Api 服务
- * @type {{saveOrder: (function(*=): *), user: {getAllCareAboutUserGroupBuyInfo: (function(): *)}, file: {deleteFileByUrl: (function(*=): *)}, groupBuy: {saveGroupBuy: (function(*=): *), findById: (function(*): *)}, product: {saveProducts: (function(*=, *): *), deleteProductImage: (function(*): *)}, noutoasiakas: {saveUserNoutoasiakas: (function(*=): *)}, merchant: {saveGroupBuyInfo: (function(*=): FlyPromise<any>), getAllNoutoasiakas: (function(*=): FlyPromise<any>), findById: (function(*): FlyPromise<any>), getGroupBuyProduct: (function(*=): FlyPromise<any>), getGroupBuyList: (function(*=): FlyPromise<any>), changeGroupBuyStatus: (function(*=): FlyPromise<any>), deleteGroupBuyStatus: (function(*=): FlyPromise<any>), getSearchOrder: (function(*=): FlyPromise<any>)}, customer: {getMerchantUserInfoAndShopInfo: (function(*=): FlyPromise<any>), getMerchantUserGroupBuys: (function(*=): FlyPromise<any>), getGroupBuyUserInfo: (function(*=): FlyPromise<any>), getGroupBuyAndProduct: (function(*=): FlyPromise<any>), findBuGroupBuyId: (function(*=): FlyPromise<any>), getUserLogisticsInfo: (function(*=): FlyPromise<any>), getNoutoasiakasByGroupBuyId: (function(*=): FlyPromise<any>), addNewOrder: (function(*=): FlyPromise<any>), getGroupBuyUserInfoAndGroupBuy: (function(*=): FlyPromise<any>), getPayImg: (function(*=): FlyPromise<any>), getInvitedUserByGroupBuy: (function(*=): FlyPromise<any>)}, common: {login: (function(*=): FlyPromise<any>), changeOrderDelivery: (function(*=): FlyPromise<any>), updateOrderProduct: (function(*=): FlyPromise<any>)}}}
+ * @type {{order: {save: (function(*=, *=, *=): *), findAll: (function(): *), findDetailById: (function(*): *)}, user: {getAllCareAboutUserGroupBuyInfo: (function(): *)}, file: {deleteFileByUrl: (function(*=): *)}, groupBuy: {save: (function(*=): *), toGroupBuyProductImage: (function(*): *), findById: (function(*): *), findByUserId: (function(*): *)}, product: {saveProducts: (function(*=, *): *), deleteProductImage: (function(*): *)}, noutoasiakas: {saveUserNoutoasiakas: (function(*=): *)}, merchant: {saveGroupBuyInfo: (function(*=): FlyPromise<any>), getAllNoutoasiakas: (function(*=): FlyPromise<any>), findById: (function(*): FlyPromise<any>), getGroupBuyProduct: (function(*=): FlyPromise<any>), getGroupBuyList: (function(*=): FlyPromise<any>), changeGroupBuyStatus: (function(*=): FlyPromise<any>), deleteGroupBuyStatus: (function(*=): FlyPromise<any>), getSearchOrder: (function(*=): FlyPromise<any>)}, customer: {getMerchantUserInfoAndShopInfo: (function(*=): FlyPromise<any>), getMerchantUserGroupBuys: (function(*=): FlyPromise<any>), getGroupBuyUserInfo: (function(*=): FlyPromise<any>), getGroupBuyAndProduct: (function(*=): FlyPromise<any>), findBuGroupBuyId: (function(*=): FlyPromise<any>), getUserLogisticsInfo: (function(*=): FlyPromise<any>), getNoutoasiakasByGroupBuyId: (function(*=): FlyPromise<any>), addNewOrder: (function(*=): FlyPromise<any>), getGroupBuyUserInfoAndGroupBuy: (function(*=): FlyPromise<any>), getPayImg: (function(*=): FlyPromise<any>), getInvitedUserByGroupBuy: (function(*=): FlyPromise<any>)}, common: {login: (function(*=): FlyPromise<any>), changeOrderDelivery: (function(*=): FlyPromise<any>), updateOrderProduct: (function(*=): FlyPromise<any>)}}}
  */
 export const portApi = {
   order: {
@@ -120,11 +123,26 @@ export const portApi = {
         url: '/order',
         data: {order: order, groupBuyId: groupBuyId, merchantUserId: merchantUserId}
       })
+    },
+    findAll: function () {
+      return get(`/order/customer`)
+    },
+    findDetailById: function (orderId) {
+      return get(`/order/detail/${orderId}`)
+    },
+    findAllIsMerchant: function (searchText, searchType) {
+      return get(`/order/merchant`)
     }
   },
   user: {
     getAllCareAboutUserGroupBuyInfo: function () {
       return get('/user/allCareAboutUserGroupBuyInfo')
+    },
+    findPayQrCodeByUserId: function (userId) {
+      return get(`/user/payQrCodeById/${userId}`)
+    },
+    toUserShop: function (userId) {
+      return get(`/user/${userId}`)
     }
   },
   file: {
@@ -144,6 +162,9 @@ export const portApi = {
     },
     toGroupBuyProductImage: function (groupBuyId) {
       return get(`/groupBuy/toGroupBuyProductImage/${groupBuyId}`)
+    },
+    toGroupBuyProductImageByUserId: function (userId) {
+      return get(`/groupBuy/toGroupBuyProductImage/userId/${userId}`)
     },
     findById: function (groupBuyId) {
       return get(`/groupBuy/${groupBuyId}`)

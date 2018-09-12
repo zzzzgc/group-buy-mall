@@ -16,7 +16,7 @@
             </div>
             <div class="main-panel-up-text">
               <i-icon type="shop_fill" size="17"/>
-              <span v-if="detail.user.shopName">{{detail.user.shopName}}</span>
+              <span v-if="detail.user.userShop">{{detail.user.userShop.shopName}}</span>
               <span v-else>未绑定店铺</span>
             </div>
           </div>
@@ -26,14 +26,14 @@
       <div class="main-panel-bottom">
         <span class="main-panel-bottom-desc text-other">公告: {{detail.groupBuy.descriptor}}</span>
         <div class="main-panel-bottom-status-class">
-          <span class="main-panel-bottom-status text-other">团购{{getStatusNickname}}</span>
+          <span class="main-panel-bottom-status text-other">{{getStatusNickname}}</span>
         </div>
       </div>
     </div>
 
     <div style="width: 80%;">
       <div class="product-list" v-for="(product, productIndex) in detail.groupBuy.groupBuyProducts" :key="productIndex">
-        <image class="product-image" :src="product.groupBuyProductImages[0].url"></image>
+        <image class="product-image" :src="product.groupBuyProductImages && product.groupBuyProductImages[0] ? product.groupBuyProductImages[0].url : ''"></image>
         <div class="product-info">
           <span class="text-other">{{product.name}}</span>
           <!--<span class="text-other">{{product.descriptor}}</span>-->
@@ -157,16 +157,18 @@
           order: {
             isDelivery: false,
             logisticsType: 1,
-            userName: 'asdfasdf',
-            phone: '46549879',
+            userName: '',
+            phone: '',
             merchantRemark: '',
             customerRemark: '',
             noutoasiakasId: 1,
             noutoasiakasName: '',
             noutoasiakasAddress: '',
-            address: 'asdfasdf',
-            createTime: '',
-            orderProducts: []
+            address: '',
+            orderProducts: [],
+            userHeadImage: '',
+            totalPrice: 0.0,
+            groupBuyName: ''
           }
         }
       }
@@ -238,7 +240,7 @@
       },
       handleUserClick: function () { // 团长详细
         wx.navigateTo({
-          url: '/pages/customer/groupBuy/list/main?id=' + this.id
+          url: '/pages/customer/groupBuy/list/main?userId=' + this.detail.user.id
         })
       },
       // 切换物流方式
@@ -280,6 +282,7 @@
         this.detail.order.userHeadImage = this.$store.state.userInfo.avatarUrl
         this.detail.order.orderProducts = []
         this.detail.order.totalPrice = totalPrice
+        this.detail.order.groupBuyName = this.detail.groupBuy.title
         console.log(this.detail.order.groupBuy)
         this.detail.groupBuy.groupBuyProducts.forEach(
           groupBuyProduct => {
@@ -292,7 +295,7 @@
                 price: groupBuyProduct.price,
                 groupBuyProductId: groupBuyProduct.id,
                 groupBuyProduct: groupBuyProduct,
-                imageUrl: groupBuyProduct.groupBuyProductImages[0].url
+                imageUrl: groupBuyProduct.groupBuyProductImages && groupBuyProduct.groupBuyProductImages[0] ? groupBuyProduct.groupBuyProductImages[0].url : ''
               }
               that.detail.order.orderProducts.push(orderProduct)
             }
@@ -302,7 +305,7 @@
           (response) => {
             // 跳转到支付页面
             wx.navigateTo({
-              url: `/pages/customer/payment/show/main?paymentAmount=${totalPrice}&id=${that.detail.user.id}`
+              url: `/pages/customer/payment/show/main?paymentAmount=${totalPrice}&userId=${that.detail.user.id}`
             })
             this.on_off.isEditLogisticsInfo = false
           }
@@ -366,7 +369,7 @@
 
 <style lang="scss" scoped>
   .main-panel {
-    width: 80%;
+    width: 100%;
     margin: 10px;
     border-radius: 15px;
     /*border: 1px solid #000000;*/
@@ -439,6 +442,10 @@
     justify-content: flex-start;
     .total-price {
       flex-grow: 2;
+      position: fixed;
+      bottom: 0%;
+      width: 100%;
+      opacity: 0.8;
       background-color: $color-theme;
     }
     .submit-order-text {

@@ -27,10 +27,12 @@
         <!--商品图片-->
         <div class="group-buy-info-product-images">
           <div class="group-buy-info-product-item" v-for="(product, productIndex) in groupBuy.groupBuyProducts" :key="productIndex">
-            <image class="group-buy-info-product-item-image" :src="product.groupBuyProductImages[0].url" mode="aspectFill"></image>
+            <image class="group-buy-info-product-item-image" :src="product.groupBuyProductImages[0]?product.groupBuyProductImages[0].url:'#'" mode="aspectFill"></image>
             <span class="group-buy-info-product-item-price text-other">{{product.price}}￥</span>
           </div>
         </div>
+
+
       </div>
     </div>
 
@@ -90,13 +92,13 @@
     onLoad: function () { // vue 初始化加载
       // options = this.$root.$mp.query
       // options = this.$mp.query.xxx
-      this.getData(this.$store.state.userId)
       // console.log('page index onLoad', this)
     },
     mounted: function () { // vue加载完毕
       // console.log('mounted', this)
     },
     onShow: function () { // 小程序页面显示
+      this.getData(this.$store.state.userId)
       // options = this.$root.$mp.appOptions
       // console.log('onShow', this)
     },

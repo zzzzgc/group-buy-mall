@@ -2,28 +2,36 @@
   <div class="container">
     <span style="margin: 50px">支付金额: <span class="text-max" style="color: red">{{paymentAmount}}</span>￥<span class="text-button-mini" style="display: block" @click="copyPaymentAmount">复制金额</span></span>
     <!--<span class="text-other" style="width: 90%;">-->
-      <!--显示二维码图片后,长按识别二维码.支付指定上面描述的金额.支付完毕后截图.选择下方的"联系客服"联系团长客服.-->
+    <!--显示二维码图片后,长按识别二维码.支付指定上面描述的金额.支付完毕后截图.选择下方的"联系客服"联系团长客服.-->
     <!--</span>-->
+    <div class="pay_div">
+      <span>微信支付</span>
+      <image style="width: 80%" :src="weChatPayQrCodeUrl" mode="aspectFit"></image>
+    </div>
+    <div class="pay_div">
+      <span>支付宝支付</span>
+      <image style="width: 80%" :src="aliPayQrCodeUrl" mode="aspectFit"></image>
+    </div>
     <i-steps direction="vertical">
+      <!--<i-step status="">-->
+      <!--<view slot="title">-->
+      <!--选择支付类型-->
+      <!--</view>-->
+      <!--<view slot="content">-->
+      <!--可选支付宝二维码支付或微信二维码支付.-->
+      <!--</view>-->
+      <!--</i-step>-->
+      <!--<i-step status="">-->
+      <!--<view slot="title">-->
+      <!--显示支付二维码图片-->
+      <!--</view>-->
+      <!--<view slot="content">-->
+      <!--长按显示菜单,选择保存图片保存图片到本地.-->
+      <!--</view>-->
+      <!--</i-step>-->
       <i-step status="">
         <view slot="title">
-          选择支付类型
-        </view>
-        <view slot="content">
-          可选支付宝二维码支付或微信二维码支付.
-        </view>
-      </i-step>
-      <i-step status="">
-        <view slot="title">
-          显示支付二维码图片
-        </view>
-        <view slot="content">
-          长按显示菜单,选择保存图片保存图片到本地.
-        </view>
-      </i-step>
-      <i-step status="">
-        <view slot="title">
-          用微信的扫描二维码的功能读取保存到本地手机相册的二维码
+          直接扫描二维码或者保存到相册再扫描二维码
         </view>
         <view slot="content">
           就会弹出支付页面,<span style="color: red">请先复制支付金额,防止临时忘记.</span>
@@ -45,14 +53,14 @@
           也可以通过已知微信联系.
         </view>
       </i-step>
-      <i-step status="">
-        <view slot="title">
-          订单操作完毕.团长会订正订单的,
-        </view>
-        <view slot="content">
-          请稍后,如果时间太长可以之后再来查看.
-        </view>
-      </i-step>
+      <!--<i-step status="">-->
+      <!--<view slot="title">-->
+      <!--订单操作完毕.团长会订正订单的,-->
+      <!--</view>-->
+      <!--<view slot="content">-->
+      <!--请稍后,如果时间太长可以之后再来查看.-->
+      <!--</view>-->
+      <!--</i-step>-->
     </i-steps>
 
     <div class="pre_wechat" @click="showWechatImg">
@@ -73,9 +81,9 @@
     data: function () {
       return {
         paymentAmount: 0.00,
-        id: '',
-        wechatPayUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112036&di=5594992704d10d7b42e9e248ceae26f5&imgtype=0&src=http%3A%2F%2Fsrc.onlinedown.net%2Fimages%2Fxcs%2F10%2F2017-06-07_59375a6f90e1f.jpg',
-        AlipayUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534589009424&di=efff4a9a2927321fe65f6f9163167dd0&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1458111359%2C4067554592%26fm%3D214%26gp%3D0.jpg'
+        orderId: '',
+        weChatPayQrCodeUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112036&di=5594992704d10d7b42e9e248ceae26f5&imgtype=0&src=http%3A%2F%2Fsrc.onlinedown.net%2Fimages%2Fxcs%2F10%2F2017-06-07_59375a6f90e1f.jpg',
+        aliPayQrCodeUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534589009424&di=efff4a9a2927321fe65f6f9163167dd0&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1458111359%2C4067554592%26fm%3D214%26gp%3D0.jpg'
       }
     },
     // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
@@ -87,14 +95,14 @@
       showWechatImg: function () {
         wx.previewImage(
           {
-            urls: [this.wechatPayUrl]
+            urls: [this.weChatPayQrCodeUrl]
           }
         )
       },
       showAlipayImg: function () {
         wx.previewImage(
           {
-            urls: [this.AlipayUrl]
+            urls: [this.aliPayQrCodeUrl]
           }
         )
       },
@@ -106,8 +114,14 @@
           }
         })
       },
-      getData: function () {
-        // TODO 服务端加载支付图片地址过来 getPayImg()
+      getData: function (userId) {
+        let that = this
+        this.$portApi.user.findPayQrCodeByUserId(userId).then(
+          (payQRCode) => {
+            that.aliPayQrCodeUrl = payQRCode.aliPayQrCodeUrl
+            that.weChatPayQrCodeUrl = payQRCode.weChatPayQrCodeUrl
+          }
+        )
       }
     },
     // 组件注册
@@ -126,9 +140,10 @@
     },
     onShow: function () { // 小程序页面显示
       // options = this.$root.$mp.appOptions
+      console.log('url参数', this.$mp.query)
       this.paymentAmount = this.$mp.query.paymentAmount
-      this.groupBuyId = this.$mp.query.id
-      console.log('获取paymentAmount', this.paymentAmount + ' ,id', this.id)
+      this.userId = this.$mp.query.userId
+      // this.getData(this.userId)
       // console.log('onShow', this)
     },
     onUnload: function () { // 小程序页面出栈
@@ -141,6 +156,14 @@
 </script>
 
 <style lang="scss" scoped>
+  .pay_div {
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+  }
   .pre_wechat {
     border-radius: 10px;
     background-color: $color-theme;

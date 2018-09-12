@@ -2,12 +2,13 @@
 <template>
   <div class="container">
     <div style="width: 100%">
-      <!--<image :src="userInfo.avatarUrl" slot="footer" alt="需要账户登录"/>-->
-      <i-cell i-class="width-default" link-type="navigateTo" is-link :url="'/pages/merchant/main'">
-        <i-avatar :src="userInfo.avatarUrl" size="large" shape="square"></i-avatar>
-        <div style="display: inline">
-          <span class="text-info">{{userInfo.name}}</span>
-          <span class="text-other" style="display: block;line-height: 1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;">这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.这是一个非常长的文本.</span>
+      <!--<image :src="user.avatarUrl" slot="footer" alt="需要账户登录"/>-->
+      <i-cell i-class="width-default">
+        <!--<i-cell i-class="width-default" link-type="navigateTo" is-link :url="'/pages/merchant/main'">-->
+        <i-avatar :src="user.avatarUrl" size="large" shape="square"></i-avatar>
+        <div style="display: inline;margin-left: 10px">
+          <span class="text-info">{{user.nickName}}</span>
+          <span class="text-other" style="display: block;line-height: 1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;"></span>
         </div>
       </i-cell>
       <div v-for="(item, index, key) in menu" :key="key">
@@ -98,7 +99,7 @@
     props: [],
     // 计算属性
     computed: {
-      userInfo () {
+      user() {
         return this.$store.state.userInfo
       }
     },

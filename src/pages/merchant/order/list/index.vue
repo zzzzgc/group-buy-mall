@@ -15,26 +15,28 @@
       </radio-group>
       <i-button type="primary" long="true" @click="">搜索</i-button>
 
-      <div v-for="(order, orderIndex) in orders" :key="orderIndex" class="item-card-block">
-        <a :href="'/pages/common/order/detail/main?orderId=' + order.orderId + '&createDate=' + order.createDate + '&isCustomer=false'">
-          <i-cell :title="'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupInfo.name" is-link>
+      <div style="box-shadow: 0 0 10px #888888;border-radius: 20px" v-for="(order, orderIndex) in detail.orders" :key="orderIndex" class="item-card-block">
+        <a :href="'/pages/common/order/detail/main?orderId=' + order.id + '&createDate=' + order.createAt + '&isCustomer=false'">
+          <i-cell :title="order.groupBuyName" is-link>
+            <!--<i-cell :title="'[' + getGroupBuyStatus[order.groupInfo.status] + ']' + order.groupBuyName" is-link>-->
             <div class="left-right">
 
               <div class="up-bottom">
-                <div style="display: inline-block">
-                  <image style="width: 20px;height: 20px;" lazy-load :src="order.userInfo.user_head_url" mode="aspectFit"></image>
-                  <span class="text-other">{{order.userInfo.name}} </span>
-                </div>
+                <image style="width: 20px;height: 20px;margin: 0 3px" lazy-load :src="order.userHeadImage" mode="aspectFit"></image>
+                <span class="text-other">{{order.userName}} </span>
               </div>
               <div class="show-phone">
-                <i-icon type="mobilephone" size="25" id="phone" @click.stop="handleCellPhone(orderIndex, order.userInfo.phone)"/>
-                <label class="text-other" @click.stop="handleCellPhone(orderIndex, order.userInfo.phone)">联系手机 <span v-if="order.userInfo.cellPhoneCount">{{order.userInfo.cellPhoneCount}}次</span></label>
+                <i-icon type="mobilephone" size="25" id="phone" @click.stop="handleCellPhone(orderIndex, order.phone)"/>
+                <label class="text-other" @click.stop="handleCellPhone(orderIndex, order.phone)">联系手机</label>
+                <!--<label class="text-other" @click.stop="handleCellPhone(orderIndex, order.user.phone)">联系手机 <span v-if="order.user.cellPhoneCount">{{order.user.cellPhoneCount}}次</span></label>-->
               </div>
 
             </div>
-            <span :class="{red:order.orderDeliverStatus==0}">发货状态:{{getOrderDeliverStatus[order.orderDeliverStatus]}}</span>
-            <span class="text-other" style="display: block">订单号:{{order.orderId}}</span>
-            <span class="text-other" style="display: block">创建时间:{{order.createDate}}</span>
+            <div style="display: flex;flex-flow: row nowrap;justify-content: space-between">
+              <span class="text-other" style="display: block">订单编号: &nbsp;{{order.id}}</span>
+              <span :class="{red:order.isDelivery==0}">发货状态:{{order.isDelivery == 1?'已发货':'未发货'}}</span>
+            </div>
+            <span class="text-other" style="display: block">下单时间: &nbsp;{{order.createAt}}</span>
           </i-cell>
         </a>
 
@@ -42,11 +44,11 @@
           <div class="text-info" style="background-color: white">
             <i-collapse-item title="查看商品详细">
               <view slot="content">
-                <div v-for="(product, productIndex) in order.products" :key="productIndex">
-                  <span>{{product.name}} &nbsp;</span>
-                  <span>{{product.price}}￥ * {{product.number}}</span>
+                <div v-for="(product, productIndex) in order.orderProducts" :key="productIndex">
+                  <span class="text-other">{{product.name}} &nbsp;</span>
+                  <span class="text-other">{{product.price}}￥ * {{product.number}}</span>
                 </div>
-                <span>总价格: {{order.orderTotalPrice}}</span>
+                <span>总价格: {{order.totalPrice}}</span>
               </view>
             </i-collapse-item>
           </div>
@@ -67,7 +69,31 @@
         search: 'search',
         searchText: '',
         searchType: '订单号',
-        orders: []
+        detail: {
+          orders: {
+            id: '',
+            createAt: '',
+            address: '',
+            customerRemark: '',
+            groupBuyName: '',
+            isDelivery: '',
+            logisticsType: '',
+            merchantRemark: '',
+            noutoasiakasAddress: '',
+            noutoasiakasId: '',
+            noutoasiakas_name: '',
+            pay_price: '',
+            total_price: '',
+            user_head_image: '',
+            user_name: '',
+            group_buy_id: '',
+            user_id: '',
+            status: '',
+            phone: '',
+            merchant_user_id: '',
+            cellPhoneCount: ''
+          }
+        }
       }
     },
     // 接收父组件传递的值,父类参数可能会动态刷新该值,但是子组件不能修改props
@@ -89,135 +115,11 @@
         this.getData()
       },
       getData: function (searchText, searchType) { //  获取服务数据
-        // TODO 获取服务端数据 getSearchOrder(searchText || undefined, searchType || undefined)
-        this.orders = [
-          {
-            createDate: '2018-07-20 16:34',
-            groupInfo: {
-              status: 0,
-              name: '良品店'
-            },
-            orderTotalPrice: 1654654.5445,
-            orderDeliverStatus: 0,
-            orderId: '123465ds9a87f98a7dsf',
-            userInfo: {
-              user_head_url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534993508&di=b81629161642e88f9634e6bdd87aaca4&imgtype=jpg&er=1&src=http%3A%2F%2Fimg07.tooopen.com%2Fimages%2F20170508%2Ftooopen_sy_208631868843.jpg',
-              name: '用户昵称',
-              phone: '18718840426'
-            },
-            products: [
-              {
-                name: '良品店一号商品',
-                price: 12.5,
-                number: 456
-              },
-              {
-                name: '良品店二号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店三号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店四号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店5号商品',
-                price: 12.54,
-                number: 15
-              }
-            ]
-          },
-          {
-            createDate: '2018-07-20 16:34',
-            groupInfo: {
-              status: 1,
-              name: '良品元和速'
-            },
-            orderTotalPrice: 1654654.5445,
-            orderDeliverStatus: 1,
-            orderId: 'a6sd8f798ew7qr3',
-            userInfo: {
-              user_head_url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534993508&di=b81629161642e88f9634e6bdd87aaca4&imgtype=jpg&er=1&src=http%3A%2F%2Fimg07.tooopen.com%2Fimages%2F20170508%2Ftooopen_sy_208631868843.jpg',
-              name: '年少大客',
-              phone: '18718840426'
-            },
-            products: [
-              {
-                name: '良品店一号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店二号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店三号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店四号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店5号商品',
-                price: 12.54,
-                number: 15
-              }
-            ]
-          },
-          {
-            groupInfo: {
-              status: 2,
-              name: '良品店'
-            },
-            createDate: '2018-07-20 16:34',
-            orderTotalPrice: 1654654.5445,
-            orderId: 'wqer87eq4r',
-            orderDeliverStatus: 0,
-            userInfo: {
-              user_head_url: 'http://img1.imgtn.bdimg.com/it/u=3496940105,3255527640&fm=27&gp=0.jpg',
-              name: '低调as来得快',
-              phone: '18718840426'
-            },
-            products: [
-              {
-                name: '良品店一号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店二号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店三号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店四号商品',
-                price: 12.54,
-                number: 15
-              },
-              {
-                name: '良品店5号商品',
-                price: 12.54,
-                number: 15
-              }
-            ]
+        this.$portApi.order.findAllIsMerchant(searchText, searchType).then(
+          (orders) => {
+            this.detail.orders = orders
           }
-        ]
+        )
       },
       handleCellPhone: function (orderIndex, phone) { // 拨打电话
         let that = this
@@ -226,13 +128,13 @@
           success: function (response) {
             // console.log('打电话成功', response)
             let num = 0
-            if (that.orders[orderIndex].userInfo.cellPhoneCount) {
-              num = that.orders[orderIndex].userInfo.cellPhoneCount + 1
+            if (that.detail.orders[orderIndex].user.cellPhoneCount) {
+              num = that.detail.orders[orderIndex].user.cellPhoneCount + 1
             } else {
               num = 1
             }
-            // console.log(that.orders[orderIndex].userInfo + '计数值:' + that.orders[orderIndex].userInfo.cellPhoneCount + '-->' + num)
-            that.$set(that.orders[orderIndex].userInfo, 'cellPhoneCount', num)
+            // console.log(that.detail.orders[orderIndex].user + '计数值:' + that.detail.orders[orderIndex].user.cellPhoneCount + '-->' + num)
+            that.$set(that.detail.orders[orderIndex].user, 'cellPhoneCount', num)
           },
           fail: function (response) {
             console.log('打电话失败', response)
@@ -284,13 +186,15 @@
 
   .left-right {
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
+    flex-flow: column nowrap;
+    justify-content: center;
   }
 
   .up-bottom {
+    width: 100%;
+    /*background-color: #ffcd32;*/
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
   }
 
   .show-phone {
@@ -298,11 +202,16 @@
     background-color: #ffcd32;
     color: white;
     height: 25px;
-    flex: none;
+    width: 150px;
+    /*flex: none;*/
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
     /*border: 1px solid #100000;*/
     label {
       color: white;
-      margin: 5px;
+      /*margin: 5px;*/
     }
   }
 

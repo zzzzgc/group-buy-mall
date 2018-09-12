@@ -4,8 +4,8 @@ var path = require('path')
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../dist/index.html'),
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    index: path.resolve(__dirname, '../dist/prod/index.html'),
+    assetsRoot: path.resolve(__dirname, process.env.npm_lifecycle_event === 'dev' ? '../dist' : '../prod/dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     productionSourceMap: false,
@@ -26,6 +26,8 @@ module.exports = {
     port: 8080,
     // 在小程序开发者工具中不需要自动打开浏览器
     autoOpenBrowser: false,
+    index: path.resolve(__dirname, '../dist/index.html'),
+    assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {},
