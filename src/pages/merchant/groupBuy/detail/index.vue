@@ -104,7 +104,7 @@
       console.log('groupBuyId', this.groupBuyId)
       return {
         title: this.title + '-嘻果团购',
-        path: 'pages/customer/groupBuy/show/main?groupBuyId=' + this.groupBuyId,
+        path: `pages/customer/groupBuy/show/main?groupBuyId=${this.groupBuyId}&careAboutUserId=${this.$store.state.userId}`,
         imageUrl: 'https://img.yzcdn.cn/upload_files/2015/09/11/fb6bb471669d31068ad350c862da1325.jpeg'
       }
     },

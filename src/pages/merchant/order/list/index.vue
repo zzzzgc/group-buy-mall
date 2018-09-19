@@ -3,17 +3,17 @@
     <div style="width: 100%;">
       <div style="font-size: 15px;">
         <i-cell title="搜索">
-          <i-input type="text" :placeholder="'请输入需要搜索的' + searchType"></i-input>
+          <i-input type="text" :value="searchText" @change="handleSearchTextChange" :placeholder="'请输入需要搜索的' + searchTypeMapping[searchType]"></i-input>
         </i-cell>
       </div>
       <span class="text-other">搜索类型:</span>
       <radio-group class="radio-group-class" @change="handleRadioClick">
-        <radio value="订单号" id="orderId" :checked="true"/>
-        <label class="text-other" for="orderId" style="display: inline-block">订单号</label>
-        <radio value="关键字" id="keyword" :checked="false"/>
+        <radio value="0" id="keyword" :checked="true"/>
         <label class="text-other" for="keyword" style="display: inline-block">关键字</label>
+        <radio value="1" id="orderId" :checked="false"/>
+        <label class="text-other" for="orderId" style="display: inline-block">订单号</label>
       </radio-group>
-      <i-button type="primary" long="true" @click="">搜索</i-button>
+      <i-button type="primary" long="true" @click="handleSearchConfirm">搜索</i-button>
 
       <div style="box-shadow: 0 0 10px #888888;border-radius: 20px" v-for="(order, orderIndex) in detail.orders" :key="orderIndex" class="item-card-block">
         <a :href="'/pages/common/order/detail/main?orderId=' + order.id + '&createDate=' + order.createAt + '&isCustomer=false'">
@@ -34,7 +34,7 @@
             </div>
             <div style="display: flex;flex-flow: row nowrap;justify-content: space-between">
               <span class="text-other" style="display: block">订单编号: &nbsp;{{order.id}}</span>
-              <span :class="{red:order.isDelivery==0}">发货状态:{{order.isDelivery == 1?'已发货':'未发货'}}</span>
+              <span :class="{red:order.isDelivery==0}">发货状态: {{order.isDelivery == 1?'已发货':'未发货'}}</span>
             </div>
             <span class="text-other" style="display: block">下单时间: &nbsp;{{order.createAt}}</span>
           </i-cell>
@@ -68,7 +68,9 @@
       return {
         search: 'search',
         searchText: '',
-        searchType: '订单号',
+        searchType: 0,
+        // 0关键字 1订单号
+        searchTypeMapping: ['关键字', '订单号'],
         detail: {
           orders: {
             id: '',
@@ -107,15 +109,20 @@
     },
     // 函数集合
     methods: {
+      handleSearchTextChange: function (e) {
+        this.searchText = e.mp.detail.detail.value
+      },
       handleRadioClick: function (e) { // 处理radio控件,修改搜索类型
+        console.log(this.searchTypeMapping[e.mp.detail.value], e.mp.detail.value)
         this.searchType = e.mp.detail.value
       },
       handleSearchConfirm: function (e) { // 处理单击搜索
         console.log('处理搜索确定', e)
-        this.getData()
+        // 0关键字 1订单号
+        this.getData(this.searchType, this.searchText)
       },
-      getData: function (searchText, searchType) { //  获取服务数据
-        this.$portApi.order.findAllIsMerchant(searchText, searchType).then(
+      getData: function (searchType, searchText) { //  获取服务数据
+        this.$portApi.order.findAllIsMerchant(searchType, searchText).then(
           (orders) => {
             this.detail.orders = orders
           }

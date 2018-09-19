@@ -100,7 +100,11 @@ fly.interceptors.response.use(
     if (error.response.data === '' || !error.response.data) {
       tips.default.toast('网络延迟,请稍后再试', 'none', 2500)
     } else {
-      tips.default.toast(error.response.data, 'none', 2500)
+      if (error.response.data instanceof Object) {
+        tips.default.toast(error.response.data.message, 'none', 3000)
+      } else {
+        tips.default.toast(error.response.data, 'none', 2500)
+      }
     }
     // return Promise.resolve('info')
   }

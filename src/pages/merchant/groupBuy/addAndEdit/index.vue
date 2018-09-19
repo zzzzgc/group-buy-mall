@@ -67,7 +67,7 @@
                 <i-switch :value="product.limitQuantity" @change="productChange($event, productIndex, 'limitQuantity')" slot="footer"/>
               </i-cell>
               <i-cell title="商品库存" v-if="!product.limitQuantity">
-                <i-input-number :value="product.quantity" min="1" max="9999" @change="productChange($event, productIndex, 'quantity')" slot="footer"/>
+                <i-input-number :value="product.inventory" min="1" max="9999" @change="productChange($event, productIndex, 'inventory')" slot="footer"/>
               </i-cell>
               <i-cell title="商品价格">
                 <i-input-number :value="product.price" min="0.01" max="9999.99" @change="productChange($event, productIndex, 'price')" slot="footer"/>
@@ -153,7 +153,7 @@
           //   price: 1,
           //   descriptor: '测试描述',
           //   limitQuantity: true,
-          //   quantity: 123,
+          //   inventory: 123,
           //   groupBuyProductImages: [
           //     {
           //       url: ''
@@ -230,6 +230,9 @@
                   canDistribution: true,
                   canNoutoasiakas: true
                 }
+                // 善后
+                this.on_off.nowEdit = false
+                this.on_off.canSend = false
                 // // console.log('提交的信息', groupBuy)
                 wx.redirectTo({
                   url: '/pages/merchant/groupBuy/manage/main?status=' + this.status
@@ -301,7 +304,7 @@
           if (product.name === '') msg = '第' + (productIndex + 1) + '个商品的商品名未填写'
           if (product.price === '') msg = '第' + (productIndex + 1) + '个商品的价格未填写'
           if (!product.limitQuantity) {
-            if (product.quantity === 0) msg = '第' + (productIndex + 1) + '个商品的库存数量未填写'
+            if (product.inventory === 0) msg = '第' + (productIndex + 1) + '个商品的库存数量未填写'
           }
           if (product.groupBuyProductImages.length < 1) msg = '第' + (productIndex + 1) + '个商品至少需要一张图片'
         }
@@ -526,7 +529,7 @@
             price: '1',
             descriptor: '',
             limitQuantity: true,
-            quantity: 1,
+            inventory: 1,
             groupBuyProductImages: []
           }
         )
@@ -535,7 +538,7 @@
         //   price: '1',
         //   descriptor: '',
         //   limitQuantity: true,
-        //   quantity: 1,
+        //   inventory: 1,
         //   groupBuyProductImages: []
         // }))
         // // // console.log('products', this.groupBuy.groupBuyProducts)
@@ -605,7 +608,6 @@
           this.title = this.$mp.query.title
         }
       } else {
-        // // TODO 模拟进行中团购
         this.isEdit = true
         this.status = 1
         this.groupBuyId = 1

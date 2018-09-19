@@ -130,8 +130,9 @@ export const portApi = {
     findDetailById: function (orderId) {
       return get(`/order/detail/${orderId}`)
     },
-    findAllIsMerchant: function (searchText, searchType) {
-      return get(`/order/merchant`)
+    findAllIsMerchant: function (searchType = 0, searchText = '') {
+      console.log(qs.stringify({searchType, searchText}))
+      return get(`/order/merchant?searchType=${searchType}&searchText=${searchText}`)
     }
   },
   user: {
@@ -143,6 +144,11 @@ export const portApi = {
     },
     toUserShop: function (userId) {
       return get(`/user/${userId}`)
+    },
+    saveCareAboutUser: function (careAboutUserId) {
+      return post({
+        url: `/user/careAboutUser/${careAboutUserId}`
+      })
     }
   },
   file: {
@@ -171,6 +177,9 @@ export const portApi = {
     },
     findByUserId: function (userId) {
       return get(`/groupBuy/findByUserId/${userId}`)
+    },
+    findAllSellInfo: function (status) {
+      return get(`/groupBuy/findAllSellInfo/${status}`)
     }
   },
   product: {
@@ -193,6 +202,17 @@ export const portApi = {
         data: noutoasiakas
       })
       // return fly.post(`${host}/noutoasiakas`, noutoasiakas)
+    }
+  },
+  weChat: {
+    createQrCode: function (pagePath, param) {
+      return post({
+        url: `/weChat/qrCode`,
+        data: {
+          pagePath: pagePath,
+          param: param
+        }
+      })
     }
   },
   merchant: {

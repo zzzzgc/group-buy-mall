@@ -99,7 +99,7 @@
     props: [],
     // 计算属性
     computed: {
-      user() {
+      user: function () {
         return this.$store.state.userInfo
       }
     },

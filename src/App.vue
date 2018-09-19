@@ -25,6 +25,10 @@
     box-sizing: border-box;
   }
 
+  image {
+    background-color: #eeeeee;
+  }
+
   /* this rule will be remove */
   * {
     transition: width 2s;

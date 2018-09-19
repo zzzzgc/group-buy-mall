@@ -201,7 +201,7 @@
     },
     onShow () { // 小程序页面显示
       if (this.$mp.query.status !== undefined) {
-        this.tabKey = this.$mp.query.status
+        this.tabKey = this.$mp.query.status ? 0 : this.$mp.query.status
       }
       this.tabChange(this.tabKey)
     },

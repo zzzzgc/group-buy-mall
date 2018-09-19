@@ -10,13 +10,11 @@
       </i-cell>
       <i-cell v-else title="获取取货二维码" label="打开二维码给货主扫描查看订单">
         <div>
-          <!--TODO 待添加取货二维码页面-->
-          <a href="/pages/customer/order/showOrderQrCode" slot="footer">
-            <i-button>打开取货二维码</i-button>
-          </a>
+          <i-button type="primary" :long="true" @click="handleOpenQrCoede">打开取货二维码</i-button>
         </div>
       </i-cell>
     </div>
+
     <!--物流信息-->
     <div style="width: 100%;">
       <i-panel title="物流信息">
@@ -49,7 +47,7 @@
     <!--商品展示-->
     <div style="width: 100%;">
       <div class="item" v-for="(product, productIndex) in  detail.order.orderProducts" :key="productIndex">
-        <image class="item-image" :src="product.imageUrl" lazy-load mode="aspectFill"></image>
+        <image class="item-image" :src="product.imageUrl" style="background-color: #eeeeee" lazy-load mode="aspectFill"></image>
         <div>
           <span class="item-title-name text-info">{{product.name}}</span>
           <span class="item-title-price text-other">{{product.price}}￥ * {{product.number}}</span>
@@ -59,8 +57,10 @@
         </div>
       </div>
     </div>
+
     <!--合计-->
     <span>合计:{{getTotalPrice}}￥</span>
+
     <!--团购信息-->
     <div style="width: 100%;">
       <i-panel title="团购信息">
@@ -68,12 +68,20 @@
         <i-input :value="detail.order.createAt" title="下单时间" disabled></i-input>
       </i-panel>
     </div>
+
     <!--编辑按钮-->
     <div v-if="!detail.order.isDelivery" style="width: 100%;">
       <!--<div v-if="!((detail.order.groupBuy.status === 2)||detail.order.isDelivery)" style="width: 100%;">-->
       <i-button v-if="!isEdit" type="primary" :long="true" @click="handleEditButtonClick">编辑团购</i-button>
       <i-button v-else type="primary" :long="true" @click="handleEditAffirmButtonClick">确认编辑结果</i-button>
     </div>
+
+    <!--收货二维码展示-->
+    <i-drawer mode="right" :visible="on_off.showQrCode">
+      <view class="demo-container">
+        <image :src="takeQrCodeImageUrl" mode="aspectFill"/>
+      </view>
+    </i-drawer>
   </div>
 </template>
 
@@ -83,8 +91,9 @@
     data: function () {
       return {
         on_off: {
-          isEditorderInfo: false
+          showQrCode: false
         },
+        takeQrCodeImageUrl: '',
         logisticsTypes: [
           {
             id: 1,
@@ -225,6 +234,18 @@
         this.detail.order.noutoasiakasId = noutoasiakas.id
         this.detail.order.noutoasiakasName = noutoasiakas.nickName
         this.detail.order.noutoasiakasAddress = noutoasiakas.address
+      },
+      // 获取并展示收货二维码
+      handleOpenQrCoede: function () {
+        let that = this
+        console.log('开始获取二维码')
+        this.$portApi.weChat.createQrCode('pages/common/order/detail/main', this.detail.order.id).then(
+          (takeQrCodeImageUrl) => {
+            console.log('获取成功  ')
+            that.takeQrCodeImageUrl = takeQrCodeImageUrl
+            that.on_off.showQrCode = true
+          }
+        )
       }
     },
     // 组件注册
@@ -234,9 +255,17 @@
     created: function () { // vue实例创建
       // console.log('page index created', this)
     },
-    onLoad: function () { // vue 初始化加载
+    onLoad: function (options) { // vue 初始化加载
       // options = this.$root.$mp.query
-      this.orderId = this.$mp.query.orderId
+
+      // options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
+      let orderId = decodeURIComponent(options.scene)
+      if (orderId !== 'undefined') {
+        console.log(orderId)
+        this.orderId = orderId
+      } else {
+        this.orderId = this.$mp.query.orderId
+      }
       this.createAt = this.$mp.query.createAt
       this.isCustomer = !(/^false/).test(this.$mp.query.isCustomer)
       console.log(this.isCustomer ? '团员进入查看' : '团长进入查看')
@@ -287,6 +316,13 @@
       !*top: -55px;*!
       left: -90px;*/
     }
+  }
+
+  .demo-container {
+    width: 100vw;
+    /*width: 80%;*/
+    height: 100%;
+    background: #fff;
   }
 
   .radio-group-parent {

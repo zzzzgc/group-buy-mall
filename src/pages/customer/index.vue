@@ -27,7 +27,7 @@
         <!--商品图片-->
         <div class="group-buy-info-product-images">
           <div class="group-buy-info-product-item" v-for="(product, productIndex) in groupBuy.groupBuyProducts" :key="productIndex">
-            <image class="group-buy-info-product-item-image" :src="product.groupBuyProductImages[0]?product.groupBuyProductImages[0].url:'#'" mode="aspectFill"></image>
+            <image class="group-buy-info-product-item-image" style="background-color: #eeeeee" :src="product.groupBuyProductImages[0]?product.groupBuyProductImages[0].url:'#'" mode="aspectFill"></image>
             <span class="group-buy-info-product-item-price text-other">{{product.price}}￥</span>
           </div>
         </div>
@@ -148,10 +148,10 @@
       }
       .group-buy-info-product-item-price {
         display: flex;
+        flex-flow: row nowrap;
         align-items: center;
         justify-content: center;
         color: white;
-        display: block;
         background-color: #888888;
       }
     }

@@ -33,12 +33,13 @@
 
     <div style="width: 80%;">
       <div class="product-list" v-for="(product, productIndex) in detail.groupBuy.groupBuyProducts" :key="productIndex">
-        <image class="product-image" :src="product.groupBuyProductImages && product.groupBuyProductImages[0] ? product.groupBuyProductImages[0].url : ''"></image>
+        <image class="product-image" style="background-color: #eeeeee" :src="product.groupBuyProductImages && product.groupBuyProductImages[0] ? product.groupBuyProductImages[0].url : ''"></image>
         <div class="product-info">
           <span class="text-other">{{product.name}}</span>
           <!--<span class="text-other">{{product.descriptor}}</span>-->
-          <span class="text-other">价格: <span style="color: red;font-size: 18px">{{product.price}}￥</span></span>
-          <i-input-number v-if="detail.groupBuy.status === 1" :value="product.number" min="0" max="10000" @change="handleProductNumberChange($event, productIndex)"/>
+          <span class="text-title"><span style="color: red;">{{product.price}}￥</span></span>
+          <span v-if="product.limitQuantity == 0" class="text-other">(只剩{{product.inventory - product.sellTotalNumber}}件)</span>
+          <i-input-number v-if="detail.groupBuy.status === 1" :value="product.number" min="0" :max="product.limitQuantity == 0?product.inventory - product.sellTotalNumber:9999" @change="handleProductNumberChange($event, productIndex)"/>
         </div>
       </div>
     </div>
@@ -304,7 +305,7 @@
         this.$portApi.order.save(this.detail.order, this.detail.groupBuy.id, this.detail.user.id).then(
           (response) => {
             // 跳转到支付页面
-            wx.navigateTo({
+            wx.redirectTo({
               url: `/pages/customer/payment/show/main?paymentAmount=${totalPrice}&userId=${that.detail.user.id}`
             })
             this.on_off.isEditLogisticsInfo = false
@@ -344,9 +345,21 @@
       console.log('跳转到show携带的参数是:', this.$mp.query)
       this.groupBuyId = this.$mp.query.groupBuyId
       this.orderId = this.$mp.query.orderId
+      let careAboutUserId = this.$mp.query.careAboutUserId
       let isTest = false
+      let isTest2 = false
       if (isTest) {
         this.orderId = 5
+      }
+      if (isTest2) {
+        careAboutUserId = 3
+      }
+      if (careAboutUserId) {
+        this.$portApi.user.saveCareAboutUser(careAboutUserId).then(
+          (response) => {
+            console.log('成功了', response)
+          }
+        )
       }
       this.getData(this.groupBuyId, this.orderId)
       // console.log('page index onLoad', this)

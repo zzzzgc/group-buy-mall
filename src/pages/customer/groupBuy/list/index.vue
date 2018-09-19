@@ -34,16 +34,16 @@
 
     <!--团购服务简介-->
     <div class="group-service">
-      <div class="list-item" v-for="(groupBuySetting, groupBuyIndex) in detail.groupBuys" :key="groupBuyIndex" @click="handleGroupClick(groupBuyIndex)">
+      <div class="list-item" v-for="(groupBuy, groupBuyIndex) in detail.groupBuys" :key="groupBuyIndex" @click="handleGroupClick(groupBuyIndex)">
         <div class="group-item-info">
-          <div class="text-title">{{groupBuySetting.title}}</div>
+          <div class="text-title">{{groupBuy.title}}</div>
           <div class="group-item-info-other">
-            <div class="text-other">创建时间:{{groupBuySetting.createAt}}</div>
-            <div class="text-other">团购状态:{{getGroupBuyStatus[groupBuySetting.status]}}</div>
+            <div class="text-other">创建时间:{{groupBuy.createAt}}</div>
+            <div class="text-other">团购状态:{{getGroupBuyStatus[groupBuy.status]}}</div>
           </div>
         </div>
         <div class="group-item-image">
-          <image class="group-item-image-item" v-for="(image, imageIndex) in groupBuySetting.groupBuyProductsImages" :key="imageIndex" :src="image.url"></image>
+          <image style="background-color: #eeeeee" class="group-item-image-item" v-for="(product, productIndex) in groupBuy.groupBuyProducts" :key="productIndex" :src="product.groupBuyProductImages[0].url"></image>
         </div>
       </div>
     </div>

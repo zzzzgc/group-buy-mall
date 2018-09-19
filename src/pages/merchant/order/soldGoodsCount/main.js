@@ -8,6 +8,9 @@ export default {
   config: {
     // 引入全局插件
     usingComponents: {
+      'i-panel': '/static/dist/panel/index',
+      'i-tab': '/static/dist/tab/index',
+      'i-tabs': '/static/dist/tabs/index',
       'i-icon': '/static/dist/icon/index'
     },
     // 注意，页面级可配置属性相当于只是`src/main.js`中配置里的`window`部分
