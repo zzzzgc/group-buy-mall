@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <i-tabs style="width: 100%;" :current="tabKey" @change="handleTabChange">
-      <!--约定 0未开团  1开团了-->
       <i-tab :key="1" :title="groupBuyStatus[0].describe">
       </i-tab>
       <i-tab :key="2" :title="groupBuyStatus[1].describe">
@@ -12,9 +11,8 @@
       <roundedEdges>
         <!--<div>-->
         <p>A paragraph for the main content.</p>
-        <p>And another one.</p>
-        {{groupBuySellInfo.title}}
-        {{groupBuySellInfo.id}}
+        <p>And another one2.</p>
+        <p>And another twe.</p>
         <!--</div>-->
         <!--<template slot="footer">-->
         <!--&lt;!&ndash;<p>Here's some contact info</p>&ndash;&gt;-->
@@ -74,12 +72,11 @@
         this.getData(status)
       },
       getData: function (status) {
-        console.log('订正状态', status)
+        console.log('订正状态', parseInt(status))
         let that = this
         this.$portApi.groupBuy.findAllSellInfo(status).then(
           (groupBuySellInfoList) => {
-            let groupBuyStatus = that.groupBuyStatus.find(groupBuy => groupBuy.status === status)
-            console.log(groupBuySellInfoList, groupBuyStatus.groupBuySellInfoList)
+            let groupBuyStatus = that.groupBuyStatus.find(groupBuy => groupBuy.status === parseInt(status))
             groupBuyStatus.groupBuySellInfoList = groupBuySellInfoList
           }
         )

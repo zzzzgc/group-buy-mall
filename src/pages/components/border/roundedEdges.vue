@@ -3,7 +3,7 @@
     <header style="padding: 10px">
       <slot name="header"></slot>
     </header>
-    <div style="padding: 10px">
+    <div style="padding: 9px">
       <slot></slot>
     </div>
     <footer style="padding: 10px">
