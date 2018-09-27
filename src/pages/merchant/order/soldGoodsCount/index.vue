@@ -7,34 +7,33 @@
       </i-tab>
     </i-tabs>
 
-    <div style="width: 85%;margin: 10px 0" v-if="tabKey == groupBuyStatus[0].status" v-for="(groupBuySellInfo, groupBuySellInfoAIndex) in groupBuyStatus[0].groupBuySellInfoList" :key="groupBuySellInfoAIndex">
-      <roundedEdges>
-        <!--<div>-->
-        <p>A paragraph for the main content.</p>
-        <p>And another one2.</p>
-        <p>And another twe.</p>
-        <!--</div>-->
-        <!--<template slot="footer">-->
-        <!--&lt;!&ndash;<p>Here's some contact info</p>&ndash;&gt;-->
-        <!--<span>Here's some contact info</span>-->
-        <!--</template>-->
-      </roundedEdges>
+    <!--团购销量展示-->
+    <div class="show-item" v-if="tabKey == groupBuyStatus[0].status" v-for="(groupBuySellInfo, groupBuySellInfoAIndex) in groupBuyStatus[0].groupBuySellInfoList" :key="groupBuySellInfoAIndex">
+      <div class="rounded-edges-border">
+        <div class="text-title">{{groupBuySellInfo.title}}</div>
+        <div class="text-other">开团时间:{{groupBuySellInfo.createAt}}</div>
+        <div style="border: #dddddd 0.5px solid"></div>
+
+        <!--商品销量展示-->
+        <div class="text-order-by-product" v-for="(product, productIndex) in groupBuySellInfo.products" :key="productIndex">
+          <span class="text-other">{{product.name}}</span>
+          <span class="text-other">{{product.price}}￥ X {{product.sellTotalNumber}}份</span>
+        </div>
+        <div style="border: #dddddd 0.5px solid"></div>
+
+        <div class="text-order-by">
+          <span class="text-info">参团人数: {{groupBuySellInfo.totalParticipantNumber}}</span>
+          <span class="text-info">客单价: {{groupBuySellInfo.averageConsumePrice}}</span>
+        </div>
+        <div class="text-order-by">
+          <span class="text-info">总销量: {{groupBuySellInfo.totalSellNumber}}</span>
+          <span class="text-info">总销售额: {{groupBuySellInfo.totalSellPrice}}</span>
+        </div>
+      </div>
     </div>
 
-    <div style="width: 85%;" v-if="tabKey == groupBuyStatus[1].status" v-for="(groupBuySellInfo, groupBuySellInfoAIndex) in groupBuyStatus[1].groupBuySellInfoList" :key="groupBuySellInfoAIndex">
-      <roundedEdges>
-        <template slot="header">
-          <h1>Here might be a page title</h1>
-        </template>
-        <div>
-          {{groupBuySellInfo.title}}
-          {{groupBuySellInfo.id}}
-        </div>
-        <template slot="footer">
-          <!--<p>Here's some contact info</p>-->
-          <span>Here's some contact info</span>
-        </template>
-      </roundedEdges>
+    <div class="show-item" v-if="tabKey == groupBuyStatus[1].status" v-for="(groupBuySellInfo, groupBuySellInfoAIndex) in groupBuyStatus[1].groupBuySellInfoList" :key="groupBuySellInfoAIndex">
+
     </div>
   </div>
 </template>
@@ -119,4 +118,31 @@
 </script>
 
 <style lang="scss" scoped>
+  .show-item {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 85%;
+    margin: 10px 0;
+  }
+
+  .rounded-edges-border {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px #888888;
+  }
+
+  .text-order-by-product {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+
+  .text-order-by {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+  }
 </style>

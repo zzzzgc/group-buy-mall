@@ -3,11 +3,11 @@
     <div>
       <text class="home-title text-title-main">水果社区团购</text>
     </div>
-    <div class="userinfo">
+    <div class="userInfo">
       <div v-if="!hasUserInfo&&canIUse">
         <button open-type="getUserInfo" @getuserinfo="getUserInfo">获取头像昵称</button>
       </div>
-      <div v-else class="userinfo">
+      <div v-else class="userInfo">
         <image class="userinfo-avatar" :src="userInfo.avatarUrl"></image>
         <!--<image @tap="bindViewTap" class="userinfo-avatar" :src="userInfo.avatarUrl"></image>-->
         <text class="userinfo-nickname text-info">{{userInfo.nickName}}</text>
@@ -16,7 +16,7 @@
       <!--<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="userLogin">点击登录</button>-->
     </div>
     <div v-if="userInfo.avatarUrl" class="button-bolck" style="width: 250px;">
-      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='success' @click='gotoMerchantConfig'><span class="text-title">我是团长</span></i-button>
+      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='success' @getphonenumber="getPhoneNumber" @click='gotoMerchantConfig'><span class="text-title">我是团长</span></i-button>
       <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='primary' @click='gotoCustomerConfig'><span class="text-title">我是团员</span></i-button>
     </div>
   </div>
@@ -62,6 +62,12 @@
         wx.navigateTo({
           url: '/pages/customer/main'
         })
+      },
+      // 获取手机号码回调,用于团长权限判断
+      getPhoneNumber: function (e) {
+        console.log(e.detail.errMsg)
+        console.log(e.detail.iv)
+        console.log(e.detail.encryptedData)
       },
       getUserInfo: function () {
         let that = this
@@ -148,7 +154,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    .userinfo {
+    .userInfo {
       margin: rpx(50) 0;
       display: flex;
       flex-direction: column;

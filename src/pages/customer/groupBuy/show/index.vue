@@ -269,8 +269,8 @@
         let msg = this.verifyOrder()
         if (msg) {
           this.$tips.toast(msg, 'none', 2000)
-          //  todo return
         }
+        console.log('校验通过')
         let that = this
         let totalPrice = this.detail.groupBuy.groupBuyProducts.reduce(
           (preValue, curValue, index, array) => {

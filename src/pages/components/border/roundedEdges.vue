@@ -62,8 +62,7 @@
 <style lang="scss" scoped>
   .rounded-edges-border {
     width: 100%;
-    /*height: 150px;*/
-    /*padding: 10px;*/
+    padding: 10px;
     border-radius: 5px;
     box-shadow: 1px 1px 3px #888888;
   }

@@ -77,9 +77,10 @@
     </div>
 
     <!--收货二维码展示-->
-    <i-drawer mode="right" :visible="on_off.showQrCode">
-      <view class="demo-container">
-        <image :src="takeQrCodeImageUrl" mode="aspectFill"/>
+    <i-drawer mode="right" :visible="on_off.showQrCode" @close="on_off.showQrCode=false">
+      <view class="demo-container qr_code_image">
+        <span class="text-button-mini">收货二维码</span>
+        <image :src="takeQrCodeImageUrl" mode="widthFix"/>
       </view>
     </i-drawer>
   </div>
@@ -93,7 +94,7 @@
         on_off: {
           showQrCode: false
         },
-        takeQrCodeImageUrl: '',
+        takeQrCodeImageUrl: 'https://group.52xiguo.com/qrCode/a1524444d54f439ea38355d30533f628.jpeg',
         logisticsTypes: [
           {
             id: 1,
@@ -246,6 +247,7 @@
             that.on_off.showQrCode = true
           }
         )
+        that.on_off.showQrCode = true
       }
     },
     // 组件注册
@@ -284,6 +286,7 @@
     },
     onHide: function () { // 小程序页面隐藏
       // console.log('onHide', this)
+      this.on_off.showQrCode = false
     }
   }
 </script>
@@ -331,6 +334,13 @@
       display: inline;
       background-color: white;
     }
+  }
+
+  .qr_code_image {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
   }
 
 </style>
