@@ -69,7 +69,7 @@ fly.interceptors.response.use(
         }
      */
     // 只将请求结果的data字段返回
-    console.log('收到响应', response)
+    // console.log('收到响应', response)
     tips.default.loaded()
     // http请求的状态成功,但是内容的状态是由服务器决定的
     // 200 201 204   2**成功  3**重定向  4**客户端异常  5**服务端异常

@@ -47,7 +47,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -149,7 +148,7 @@
       handleGroupClick: function (groupBuyIndex) { // 团购服务被单击
         let groupBuyId = this.detail.groupBuys[groupBuyIndex].id
         wx.navigateTo({
-          url: '../show/main?id=' + groupBuyId
+          url: '../show/main?groupBuyId=' + groupBuyId
         })
       }
     },

@@ -149,6 +149,9 @@ export const portApi = {
       return post({
         url: `/user/careAboutUser/${careAboutUserId}`
       })
+    },
+    merchantLogin: function (iv, encryptedData) {
+      return get(`/user/login/merchant?iv=${iv}&encryptedData=${encryptedData}`)
     }
   },
   file: {
@@ -193,6 +196,9 @@ export const portApi = {
       return deletePost({
         url: `/product/image/${groupBuyProductId}`
       })
+    },
+    toGroupBuyProductImageById: function (groupBuyProductId) {
+      return get(`/product/toGroupBuyProductImageById/${groupBuyProductId}`)
     }
   },
   noutoasiakas: {

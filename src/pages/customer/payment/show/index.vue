@@ -81,7 +81,7 @@
     data: function () {
       return {
         paymentAmount: 0.00,
-        orderId: '',
+        userId: '',
         weChatPayQrCodeUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534586112036&di=5594992704d10d7b42e9e248ceae26f5&imgtype=0&src=http%3A%2F%2Fsrc.onlinedown.net%2Fimages%2Fxcs%2F10%2F2017-06-07_59375a6f90e1f.jpg',
         aliPayQrCodeUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1534589009424&di=efff4a9a2927321fe65f6f9163167dd0&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1458111359%2C4067554592%26fm%3D214%26gp%3D0.jpg'
       }
@@ -143,7 +143,7 @@
       console.log('url参数', this.$mp.query)
       this.paymentAmount = this.$mp.query.paymentAmount
       this.userId = this.$mp.query.userId
-      // this.getData(this.userId)
+      this.getData(this.userId)
       // console.log('onShow', this)
     },
     onUnload: function () { // 小程序页面出栈

@@ -16,7 +16,7 @@
       <!--<button open-type="getUserInfo" lang="zh_CN" @getuserinfo="userLogin">点击登录</button>-->
     </div>
     <div v-if="userInfo.avatarUrl" class="button-bolck" style="width: 250px;">
-      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='success' @getphonenumber="getPhoneNumber" @click='gotoMerchantConfig'><span class="text-title">我是团长</span></i-button>
+      <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='success' open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"><span class="text-title">我是团长</span></i-button>
       <i-button :disabled="!userInfo.avatarUrl" size="large" shape="circle" inline type='primary' @click='gotoCustomerConfig'><span class="text-title">我是团员</span></i-button>
     </div>
   </div>
@@ -65,9 +65,15 @@
       },
       // 获取手机号码回调,用于团长权限判断
       getPhoneNumber: function (e) {
-        console.log(e.detail.errMsg)
-        console.log(e.detail.iv)
-        console.log(e.detail.encryptedData)
+        console.log(e.mp.detail.errMsg)
+        console.log(e.mp.detail.iv)
+        console.log(e.mp.detail.encryptedData)
+        let that = this
+        this.$portApi.user.merchantLogin(e.mp.detail.iv, e.mp.detail.encryptedData).then(
+          () => {
+            that.gotoMerchantConfig()
+          }
+        )
       },
       getUserInfo: function () {
         let that = this

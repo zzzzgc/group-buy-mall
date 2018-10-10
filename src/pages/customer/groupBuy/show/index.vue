@@ -31,24 +31,40 @@
       </div>
     </div>
 
-    <div style="width: 80%;">
-      <div class="product-list" v-for="(product, productIndex) in detail.groupBuy.groupBuyProducts" :key="productIndex">
-        <image class="product-image" style="background-color: #eeeeee" :src="product.groupBuyProductImages && product.groupBuyProductImages[0] ? product.groupBuyProductImages[0].url : ''"></image>
+    <div style="width: 100%;padding-bottom: 45px">
+      <!--product-list-->
+      <div class="list-item" v-for="(product, productIndex) in detail.groupBuy.groupBuyProducts" :key="productIndex">
+        <a :href="'/pages/customer/product/main?groupBuyId='+ detail.groupBuy.id + '&groupBuyProductId=' + product.id">
+          <image class="product-image" style="background-color: #eeeeee;width: 100%;" mode="aspectFill"
+                 :src="product.groupBuyProductImages && product.groupBuyProductImages[0] ? product.groupBuyProductImages[0].url : ''"></image>
+        </a>
         <div class="product-info">
-          <span class="text-other">{{product.name}}</span>
+          <div>
+            <span class="text-other">{{product.name}}</span>
+            <span v-if="product.limitQuantity == 0" class="text-other">(已销{{product.sellTotalNumber}}份,只剩{{product.inventory - product.sellTotalNumber}}份)</span>
+            <span v-else class="text-other">(已销{{product.sellTotalNumber}}份)</span>
+          </div>
           <!--<span class="text-other">{{product.descriptor}}</span>-->
-          <span class="text-title"><span style="color: red;">{{product.price}}￥</span></span>
-          <span v-if="product.limitQuantity == 0" class="text-other">(只剩{{product.inventory - product.sellTotalNumber}}件)</span>
-          <i-input-number v-if="detail.groupBuy.status === 1" :value="product.number" min="0" :max="product.limitQuantity == 0?product.inventory - product.sellTotalNumber:9999" @change="handleProductNumberChange($event, productIndex)"/>
+          <div class="product-price-and-sell-number">
+            <span class="text-title" style="color: red;">{{product.price}}￥</span>
+            <div style="display: inline-block">
+              <i-input-number
+                v-if="detail.groupBuy.status === 1&&((product.inventory - product.sellTotalNumber)>1||product.limitQuantity)"
+                :value="product.number" min="0"
+                :max="product.limitQuantity == 0?product.inventory - product.sellTotalNumber:9999"
+                @change="handleProductNumberChange($event, productIndex)"/>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div style="width: 100%;" v-if="detail.groupBuy.status === 1">
-      <button class="submit-order" :disabled="!detail.groupBuy.status == 1||!getTotalPrice" style="padding: 0" @click="handleSubmitOrderClick">
+      <button class="submit-order" :disabled="!detail.groupBuy.status == 1||!getTotalPrice" style="padding: 0"
+              @click="handleSubmitOrderClick">
         <div class="total-price">
           <i-icon type="publishgoods_fill" size="28"/>
-          合计:{{getTotalPrice}}￥ {{isEdit?'编辑':'提交'}} 订单
+          合计:{{getTotalPrice}}￥ {{isEdit?'编辑':'提交'}}订单
         </div>
       </button>
     </div>
@@ -58,45 +74,57 @@
       <span style="font-size: 10px">团员<br>首页</span>
     </div>
 
+    <!--添加订单-->
+    <send_order :groupBuy="detail.groupBuy" :userId="detail.user.id" v-model.lazy="detail.order" :isEditLogisticsInfo="on_off.isEditLogisticsInfo"></send_order>
+
     <!--物流信息-->
-    <div style="width: 100%;">
-      <i-drawer mode="right" :visible="on_off.isEditLogisticsInfo" mask-closable="false">
-        <view class="demo-container">
-          <i-tabs :current="detail.order.logisticsType" @change="handleTypeLogisticsChange">
-            <i-tab v-if="detail.groupBuy.canDistribution" key="1" title="配送到家"></i-tab>
-            <i-tab v-if="detail.groupBuy.canNoutoasiakas" key="2" title="自提"></i-tab>
-          </i-tabs>
-          <div v-if="detail.order.logisticsType == 1">
-            <!--配送到家-->
-            <i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名" @change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>
-            <i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话" @change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>
-            <i-input :value="detail.order.address" title="收获地址" placeholder="请输入收获完整地址,包含省市区和详细地址" @change="orderChange('address', $event.mp.detail.detail.value)"></i-input>
-            <i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注" @change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>
-          </div>
-          <div v-else>
-            <!--自提-->
-            <i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名" @change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>
-            <i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话" @change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>
-            <i-panel title="在下方选择自行提取货物的地点">
-              <radio-group class="radio-group-class" @change="handleNoutoasiakasChange">
-                <div v-for="(noutoasiakas, noutoasiakasIndex) in detail.groupBuy.groupBuyNoutoasiakases" :key="noutoasiakasIndex">
-                  <radio :value="noutoasiakasIndex" :id="noutoasiakas.id+'noutoasiakasId'" :checked="false"/>
-                  <label class="text-other" :for="noutoasiakas.id+'noutoasiakasId'" style="display: inline">{{noutoasiakas.address}}</label>
-                </div>
-              </radio-group>
-            </i-panel>
-            <i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注(可选)" @change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>
-          </div>
-          <i-button @click="addOrUpdateOrderClick(1)" type="primary">确定</i-button>
-          <i-button @click="addOrUpdateOrderClick(0)" type="primary">取消</i-button>
-        </view>
-      </i-drawer>
-    </div>
+    <!--<div style="width: 100%;">-->
+      <!--<i-drawer mode="right" :visible="on_off.isEditLogisticsInfo" mask-closable="false">-->
+        <!--<view class="demo-container">-->
+          <!--<i-tabs :current="detail.order.logisticsType" @change="handleTypeLogisticsChange">-->
+            <!--<i-tab v-if="detail.groupBuy.canDistribution" key="1" title="配送到家"></i-tab>-->
+            <!--<i-tab v-if="detail.groupBuy.canNoutoasiakas" key="2" title="自提"></i-tab>-->
+          <!--</i-tabs>-->
+          <!--<div v-if="detail.order.logisticsType == 1">-->
+            <!--&lt;!&ndash;配送到家&ndash;&gt;-->
+            <!--<i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名"-->
+                     <!--@change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>-->
+            <!--<i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话"-->
+                     <!--@change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>-->
+            <!--<i-input :value="detail.order.address" title="收获地址" placeholder="请输入收获完整地址,包含省市区和详细地址"-->
+                     <!--@change="orderChange('address', $event.mp.detail.detail.value)"></i-input>-->
+            <!--<i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注"-->
+                     <!--@change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>-->
+          <!--</div>-->
+          <!--<div v-else>-->
+            <!--&lt;!&ndash;自提&ndash;&gt;-->
+            <!--<i-input :value="detail.order.userName" title="联系人姓名" placeholder="请输入联系人姓名"-->
+                     <!--@change="orderChange('userName', $event.mp.detail.detail.value)"></i-input>-->
+            <!--<i-input :value="detail.order.phone" title="联系电话" placeholder="请输入联系电话"-->
+                     <!--@change="orderChange('phone', $event.mp.detail.detail.value)"></i-input>-->
+            <!--<i-panel title="在下方选择自行提取货物的地点">-->
+              <!--<radio-group class="radio-group-class" @change="handleNoutoasiakasChange">-->
+                <!--<div v-for="(noutoasiakas, noutoasiakasIndex) in detail.groupBuy.groupBuyNoutoasiakases"-->
+                     <!--:key="noutoasiakasIndex">-->
+                  <!--<radio :value="noutoasiakasIndex" :id="noutoasiakas.id+'noutoasiakasId'" :checked="false"/>-->
+                  <!--<label class="text-other" :for="noutoasiakas.id+'noutoasiakasId'" style="display: inline">{{noutoasiakas.address}}</label>-->
+                <!--</div>-->
+              <!--</radio-group>-->
+            <!--</i-panel>-->
+            <!--<i-input :value="detail.order.customerRemark" title="备注" placeholder="请输入备注(可选)"-->
+                     <!--@change="orderChange('customerRemark', $event.mp.detail.detail.value)"></i-input>-->
+          <!--</div>-->
+          <!--<i-button @click="addOrUpdateOrderClick(1)" type="primary">确定</i-button>-->
+          <!--<i-button @click="addOrUpdateOrderClick(0)" type="primary">取消</i-button>-->
+        <!--</view>-->
+      <!--</i-drawer>-->
+    <!--</div>-->
   </div>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import { mapGetters } from 'vuex'
+  import sendOrder from '../../../components/order/sendOrder'
 
   export default {
     // 数据
@@ -145,6 +173,7 @@
                 limitQuantity: false,
                 number: 0,
                 quantity: 0,
+                sellTotalNumber: 0,
                 groupBuyProductsImages: [
                   {
                     url: '',
@@ -231,8 +260,8 @@
         }
       },
       // 修改商品数量
-      handleProductNumberChange: function ({mp}, productIndex) {
-        this.$set(this.detail.groupBuy.groupBuyProducts, productIndex, Object.assign({}, this.detail.groupBuy.groupBuyProducts[productIndex], {number: mp.detail.value}))
+      handleProductNumberChange: function ({ mp }, productIndex) {
+        this.$set(this.detail.groupBuy.groupBuyProducts, productIndex, Object.assign({}, this.detail.groupBuy.groupBuyProducts[productIndex], { number: mp.detail.value }))
         // this.detail.groupBuy.groupBuyProducts[productIndex].id
         // this.detail.order.orderProducts.find()
       },
@@ -245,11 +274,11 @@
         })
       },
       // 切换物流方式
-      handleTypeLogisticsChange: function ({mp}) {
+      handleTypeLogisticsChange: function ({ mp }) {
         this.detail.order.logisticsType = mp.detail.key
       },
       // 修改自提点
-      handleNoutoasiakasChange: function ({mp}) {
+      handleNoutoasiakasChange: function ({ mp }) {
         let noutoasiakasIndex = parseInt(mp.detail.value)
         let noutoasiakas = this.detail.groupBuy.groupBuyNoutoasiakases[noutoasiakasIndex]
         console.log(noutoasiakasIndex, noutoasiakas)
@@ -334,7 +363,9 @@
       }
     },
     // 组件注册
-    component: {},
+    component: {
+      sendOrder
+    },
     // 侦听属性
     watch: {},
     created: function () { // vue实例创建
@@ -428,22 +459,32 @@
   }
 
   .product-list {
+    background-color: white;
     margin-bottom: 5px;
     /*border: 1px solid #000000;*/
-    display: flex;
-    align-items: center;
-    flex-flow: row nowrap;
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*flex-flow: row nowrap;*/
     border-radius: 10px;
+    padding: 5px;
+    box-shadow: 1px 1px 1px #888888;
     .product-image {
       margin: 5px;
       flex: none;
-      width: 80px;
-      height: 80px;
+      /*width: 80px;*/
+      height: 240px;
+      /*height: 80px;*/
     }
     .product-info {
       margin: 10px;
       display: flex;
       flex-flow: column nowrap;
+      .product-price-and-sell-number {
+        width: 100%;
+        display: flow;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+      }
     }
   }
 
