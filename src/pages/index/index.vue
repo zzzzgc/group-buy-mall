@@ -65,15 +65,19 @@
       },
       // 获取手机号码回调,用于团长权限判断
       getPhoneNumber: function (e) {
-        console.log(e.mp.detail.errMsg)
-        console.log(e.mp.detail.iv)
-        console.log(e.mp.detail.encryptedData)
-        let that = this
-        this.$portApi.user.merchantLogin(e.mp.detail.iv, e.mp.detail.encryptedData).then(
-          () => {
-            that.gotoMerchantConfig()
-          }
-        )
+        // console.log(e)
+        this.gotoMerchantConfig()
+        // if (e.mp.detail.errMsg === 'getPhoneNumber:ok') {
+        //   console.log(e.mp.detail.errMsg)
+        //   console.log(e.mp.detail.iv)
+        //   console.log(e.mp.detail.encryptedData)
+        //   let that = this
+        //   this.$portApi.user.merchantLogin(e.mp.detail.iv, e.mp.detail.encryptedData).then(
+        //     () => {
+        //       that.gotoMerchantConfig()
+        //     }
+        //   )
+        // }
       },
       getUserInfo: function () {
         let that = this

@@ -75,7 +75,7 @@
     </div>
 
     <!--添加订单-->
-    <send_order :groupBuy="detail.groupBuy" :userId="detail.user.id" v-model.lazy="detail.order" :isEditLogisticsInfo="on_off.isEditLogisticsInfo"></send_order>
+    <add-order :groupBuy="detail.groupBuy" :userId="detail.user.id" v-model.lazy="detail.order" :isEditLogisticsInfo="on_off.isEditLogisticsInfo"></add-order>
 
     <!--物流信息-->
     <!--<div style="width: 100%;">-->
@@ -124,7 +124,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import sendOrder from '../../../components/order/sendOrder'
+  // import addOrder from '../../../common/order/add'
 
   export default {
     // 数据
@@ -207,12 +207,12 @@
     props: [],
     // 计算属性
     computed: {
-      getStatusNickname: function () {
-        return this.getGroupBuyStatus[this.detail.groupBuy.status]
-      },
       ...mapGetters('group', [
         'getGroupBuyStatus'
       ]),
+      getStatusNickname: function () {
+        return this.getGroupBuyStatus[this.detail.groupBuy.status]
+      },
       getTotalPrice: function () {
         return this.detail.groupBuy.groupBuyProducts.reduce(
           (preValue, curValue, index, array) => {
@@ -364,7 +364,7 @@
     },
     // 组件注册
     component: {
-      sendOrder
+      // addOrder
     },
     // 侦听属性
     watch: {},

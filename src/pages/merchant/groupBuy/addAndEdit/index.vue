@@ -346,7 +346,7 @@
           // // console.log(this.groupBuy.groupBuyNoutoasiakases)
           this.groupBuy.groupBuyNoutoasiakases.forEach(
             (groupBuyNoutoasiakases, userNoutoasiakasIndex) => {
-              // // console.log('ceshi', groupBuyNoutoasiakases.nickName, groupBuyNoutoasiakases.address, noutoasiakas.nickName, noutoasiakas.address, index, '改为', userNoutoasiakasIndex)
+              // // console.log('add', groupBuyNoutoasiakases.nickName, groupBuyNoutoasiakases.address, noutoasiakas.nickName, noutoasiakas.address, index, '改为', userNoutoasiakasIndex)
               if (groupBuyNoutoasiakases.nickName === noutoasiakas.nickName) {
                 if (groupBuyNoutoasiakases.address === noutoasiakas.address) {
                   // // console.log('找到了', groupBuyNoutoasiakases.nickName, groupBuyNoutoasiakases.address, noutoasiakas.nickName, noutoasiakas.address, index, '改为', userNoutoasiakasIndex)

@@ -8,6 +8,7 @@ export default {
   config: {
     // 引入全局插件
     usingComponents: {
+      'add-order': '/pages/order/add',
       'i-cell': '/static/dist/cell/index',
       'i-icon': '/static/dist/icon/index',
       'i-button': '/static/dist/button/index',
